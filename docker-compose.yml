@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'task'
+      MYSQL_USER: 'task_user'
+      MYSQL_PASSWORD: 'pleasechange'
+      MYSQL_ROOT_PASSWORD: 'supersecret'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
