@@ -1,11 +1,11 @@
 export interface NewMessage {
-  userName: string;
+  username: string;
   content: string;
 }
 
 export interface Message {
   id: number;
-  userName: string;
+  username: string;
   content: string;
   createdAt: Date;
 }

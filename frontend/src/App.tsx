@@ -6,6 +6,9 @@ import { createTheme, ThemeProvider, } from '@mui/material';
 import ChatWindow from './task/chat/ChatWindow';
 import  '@fontsource/neucha';
 import { ResponsiveAppBar } from './task/ResponsiveAppBar';
+import { useContext } from 'react';
+import { LoginContext } from './task/context/LoginContext';
+import { LoginForm } from './task/form/LoginForm';
 
 const theme = createTheme({
   typography: {
@@ -17,17 +20,23 @@ const theme = createTheme({
 });
 
 const App = () => {
+  const { username, }  = useContext(LoginContext);
+
   return (
-    <ThemeProvider theme={theme}>
-      <StompSessionProvider
-        url={'http://localhost:8080/ws'}>
-        <ResponsiveAppBar />
-        <SocketErrorPopUp />
-        <NewTaskForm />
-        <TaskListContent />
-        <ChatWindow />
-      </StompSessionProvider>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        { username ?
+          <StompSessionProvider
+            url={'http://localhost:8080/ws'}>
+            <ResponsiveAppBar />
+            <SocketErrorPopUp />
+            <NewTaskForm />
+            <TaskListContent />
+            <ChatWindow />
+          </StompSessionProvider>
+          : <LoginForm />
+        }
+      </ThemeProvider>
+      
   );
 };
 

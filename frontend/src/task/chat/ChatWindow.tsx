@@ -3,13 +3,16 @@ import Grid from '@mui/material/Grid2';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
 import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
 import { Message, NewMessage } from './chat';
+import { LoginContext } from '../context/LoginContext';
 
 const baseUrl = import.meta.env.VITE_TASK_BACKEND_BASE_URL;
 
 const ChatWindow = () => {
+  const { username: loggedInUsername, } = useContext(LoginContext);
+
   const stompClient = useStompClient();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -47,7 +50,7 @@ const ChatWindow = () => {
   const handleSendMessage = () => {
     if (newMessage.trim() !== '') {
       const message: NewMessage = {  
-        userName: 'dummy',
+        username: loggedInUsername ?? 'anonymous',
         content: newMessage,
       };
 
@@ -104,7 +107,7 @@ const ChatWindow = () => {
           <Box id='chat-window' p={2} sx={{ maxHeight: '400px', minHeight: '200px', width: '100%', float: 'left', overflowY: 'auto', }}>
             {messages.map((message) => (
               <Typography key={message.id} style={{ padding: '6px', wordWrap: 'break-word', wordBreak: 'break-word' }}>
-                [{new Date(message.createdAt).toLocaleString('FI-fi')}] <b>{message.userName}: </b>{message.content}
+                [{new Date(message.createdAt).toLocaleString('FI-fi')}] <b>{message.username}: </b>{message.content}
               </Typography>
             ))}
           </Box>

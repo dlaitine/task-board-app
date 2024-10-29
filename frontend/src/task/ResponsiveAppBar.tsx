@@ -10,13 +10,14 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { AccountCircle } from '@mui/icons-material';
-
-const pages = ['Home'];
-const settings = ['Logout'];
+import { LoginContext } from './context/LoginContext';
 
 export const ResponsiveAppBar = () => {
+
+  const { username, logout, } = useContext(LoginContext);
+
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -35,16 +36,23 @@ export const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
+  const handleHomeClick = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+  }
+
   return (
-    <AppBar position='static' sx={{ bgcolor: '#0077B6'}}>
+    <AppBar position='static' sx={{ bgcolor: '#0077B6',}}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-          <TaskIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <TaskIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, }} />
           <Typography
             variant='h5'
             noWrap
-            component='a'
-            href='#app-bar-with-responsive-menu'
+            component='p'
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -82,19 +90,16 @@ export const ResponsiveAppBar = () => {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key='home' onClick={handleHomeClick}>
+                <Typography sx={{ textAlign: 'center' }}>Home</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <TaskIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant='h5'
             noWrap
-            component='a'
-            href='#app-bar-with-responsive-menu'
+            component='p'
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -107,18 +112,16 @@ export const ResponsiveAppBar = () => {
             Task App
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            <Button
+              key='home'
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Home
+            </Button>
           </Box>
           <Box sx={{ flexGrow: 0, }}>
-            <Tooltip title={'Logged in as '}>
+            <Tooltip title={'Logged in as ' + username}>
               <IconButton onClick={handleOpenUserMenu} size='large' color='inherit' sx={{ p: 0 }}>
                 <AccountCircle />
               </IconButton>
@@ -139,11 +142,11 @@ export const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key='logout' onClick={handleLogout}>
+                <Typography sx={{ textAlign: 'center' }}>
+                  Logout
+                </Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

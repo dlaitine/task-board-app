@@ -54,6 +54,9 @@ export const TaskForm = ({ isOpen, onClose, dialogTitle, onSubmit, defaultTitle 
             required
             error={titleError !== ''}
             helperText={titleError}
+            slotProps={{
+              htmlInput: { maxLength: 255 }
+            }}
           />
           <TextField
             label='Description'
