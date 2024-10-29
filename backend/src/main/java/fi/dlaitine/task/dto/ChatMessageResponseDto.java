@@ -8,7 +8,7 @@ import lombok.Getter;
 public class ChatMessageResponseDto {
 
     Integer id;
-    String userName;
+    String username;
     String content;
 
     // Epoch millis

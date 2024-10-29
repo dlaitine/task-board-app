@@ -20,7 +20,7 @@ public class ChatMessageMapper {
     public static ChatMessageResponseDto fromChatMessageEntity(ChatMessageEntity entity) {
         return ChatMessageResponseDto.builder()
                 .id(entity.getId())
-                .userName(entity.getUserName())
+                .username(entity.getUsername())
                 .content(entity.getContent())
                 .createdAt(entity.getCreatedAt())
                 .build();
@@ -28,7 +28,7 @@ public class ChatMessageMapper {
 
     public static ChatMessageEntity fromCreateChatMessage(CreateChatMessageDto message) {
         return ChatMessageEntity.builder()
-                .userName(message.userName())
+                .username(message.username())
                 .content(message.content())
                 .build();
     }

@@ -26,8 +26,8 @@ public class ChatMessageEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "user_name", nullable = false)
-    private String userName;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
