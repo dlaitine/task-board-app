@@ -1,5 +1,5 @@
 import { TaskForm } from './TaskForm';
-import { NewTask } from '../task';
+import { NewTask } from '../task/task';
 import { useStompClient } from 'react-stomp-hooks';
 import { Fab } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';

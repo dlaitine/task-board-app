@@ -1,14 +1,13 @@
-import { TaskListContent } from './TaskListContent';
-import { NewTaskForm } from './form/NewTaskForm';
-import ChatWindow from './chat/ChatWindow';
+import { TaskListContent } from '../task/TaskListContent';
+import { NewTaskForm } from '../form/NewTaskForm';
+import ChatWindow from '../chat/ChatWindow';
 import { useContext, useEffect, useState } from 'react';
-import { Message } from './chat/chat';
-import { Task } from './task';
+import { Message } from '../chat/chat';
+import { Task } from '../task/task';
 import { useNavigate, useParams } from 'react-router-dom';
-import { NotificationContext } from './context/NotificationContext';
-import LoadingSpinner from './LoadingSpinner';
-
-const baseUrl = import.meta.env.VITE_TASK_BACKEND_BASE_URL;
+import { NotificationContext } from '../context/NotificationContext';
+import LoadingSpinner from '../LoadingSpinner';
+import { baseUrl } from '../constants';
 
 export const BoardPage = () => {
   const navigate = useNavigate();

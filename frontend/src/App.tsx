@@ -1,14 +1,14 @@
 import { useContext } from 'react';
-import { LoginContext } from './task/context/LoginContext';
-import { LoginForm } from './task/form/LoginForm';
+import { LoginContext } from './context/LoginContext';
+import { LoginForm } from './form/LoginForm';
 import { Route, Routes } from 'react-router-dom';
-import { BoardPage } from './task/BoardPage';
-import { HomePage } from './task/HomePage';
-import { ResponsiveAppBar } from './task/ResponsiveAppBar';
-import { ErrorPopUp } from './task/error/ErrorPopUp';
+import { BoardPage } from './board/BoardPage';
+import { ResponsiveAppBar } from './ResponsiveAppBar';
+import { ErrorPopUp } from './error/ErrorPopUp';
 import { useSubscription } from 'react-stomp-hooks';
-import { NotificationContext } from './task/context/NotificationContext';
-import { NotFoundPage } from './task/error/NotFoundPage';
+import { NotificationContext } from './context/NotificationContext';
+import { NotFoundPage } from './error/NotFoundPage';
+import { HomePage } from './HomePage';
 
 const App = () => {
   const { username, }  = useContext(LoginContext);

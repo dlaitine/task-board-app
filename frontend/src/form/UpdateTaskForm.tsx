@@ -1,5 +1,5 @@
 import { TaskForm } from './TaskForm';
-import { Task } from '../task';
+import { Task } from '../task/task';
 import { useStompClient } from 'react-stomp-hooks';
 import { Button, Typography } from '@mui/material';
 import { useState } from 'react';

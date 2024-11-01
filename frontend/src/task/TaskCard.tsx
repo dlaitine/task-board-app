@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, CardActions, Typography } from '@mui/material';
 import { Draggable } from '@hello-pangea/dnd';
 import { Task } from './task';
-import { UpdateTaskForm } from './form/UpdateTaskForm';
+import { UpdateTaskForm } from '../form/UpdateTaskForm';
 
 interface TaskCardProps {
   boardId: string;

@@ -1,12 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
-import { LoginProvider } from './task/context/LoginContext.tsx'
+import { LoginProvider } from './context/LoginContext.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { createTheme, ThemeProvider } from '@mui/material'
 import  '@fontsource/neucha';
 import { StompSessionProvider } from 'react-stomp-hooks'
-import { NotificationProvider } from './task/context/NotificationContext.tsx'
+import { NotificationProvider } from './context/NotificationContext.tsx'
+import { baseUrl } from './constants.ts'
 
 const theme = createTheme({
   typography: {
@@ -19,8 +20,6 @@ const theme = createTheme({
     }
   },
 });
-
-const baseUrl = import.meta.env.VITE_TASK_BACKEND_BASE_URL;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
