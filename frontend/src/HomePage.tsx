@@ -1,9 +1,8 @@
 import { useContext } from 'react';
 import { LoginContext } from './context/LoginContext';
-import { Box, Divider, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { NewBoardForm } from './board/NewBoardForm';
-import LoadingSpinner from './LoadingSpinner';
 import { PublicBoardList } from './board/PublicBoardList';
 import { PrivateBoardList } from './board/PrivateBoardList';
 
