@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginContextProps {
   username: string | null;
@@ -13,6 +14,8 @@ export const LoginContext = createContext<LoginContextProps>({
 });
 
 export const LoginProvider = ({ children } : { children: React.ReactNode }) => {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState<string | null>(localStorage.getItem('username') || null);
 
   const loginHandler = (username: string) => {
@@ -23,6 +26,7 @@ export const LoginProvider = ({ children } : { children: React.ReactNode }) => {
   const logoutHandler = () => {
     localStorage.removeItem('username');
     setUsername(null);
+    navigate('');
   };
 
   const loginContextValue: LoginContextProps = {

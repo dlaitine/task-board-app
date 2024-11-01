@@ -4,13 +4,13 @@ import { Task } from './task';
 import { statusNames } from './statuses';
 import { TaskCard } from './TaskCard';
 
-export const TaskColumn = ({
-  status,
-  tasks,
-}: {
+interface TaskColumnProps {
+  boardId: string;
   status: Task['status'];
   tasks: Task[];
-}) => (
+};
+
+export const TaskColumn = ({ boardId, status, tasks } : TaskColumnProps) => (
   <Box
     sx={{
       flex: 1,
@@ -47,7 +47,7 @@ export const TaskColumn = ({
         }}
       >
         {tasks.map((task, position) => (
-           <TaskCard key={task.id} task={task} position={position} />
+           <TaskCard boardId={boardId} key={task.id} task={task} position={position} />
          ))}
          {droppableProvided.placeholder}
       </Box>

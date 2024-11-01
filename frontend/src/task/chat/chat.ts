@@ -7,5 +7,5 @@ export interface Message {
   id: number;
   username: string;
   content: string;
-  createdAt: Date;
+  created_at: number;
 }

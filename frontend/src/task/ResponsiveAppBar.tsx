@@ -13,8 +13,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { useContext, useState } from 'react';
 import { AccountCircle } from '@mui/icons-material';
 import { LoginContext } from './context/LoginContext';
+import { useNavigate } from "react-router-dom";
 
 export const ResponsiveAppBar = () => {
+  const navigate = useNavigate();
 
   const { username, logout, } = useContext(LoginContext);
 
@@ -38,6 +40,7 @@ export const ResponsiveAppBar = () => {
 
   const handleHomeClick = () => {
     setAnchorElNav(null);
+    navigate('/');
   };
 
   const handleLogout = () => {
@@ -61,7 +64,7 @@ export const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            Task App
+            Task Board App
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -109,12 +112,12 @@ export const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            Task App
+            Task Board App
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button
               key='home'
-              onClick={handleCloseNavMenu}
+              onClick={handleHomeClick}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               Home

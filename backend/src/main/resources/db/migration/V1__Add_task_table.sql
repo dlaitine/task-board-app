@@ -1,7 +1,0 @@
-CREATE TABLE task (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    status ENUM('BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE') NOT NULL,
-    `index` INTEGER
-);

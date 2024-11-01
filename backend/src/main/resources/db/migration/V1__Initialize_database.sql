@@ -1,0 +1,24 @@
+CREATE TABLE board (
+    id VARCHAR(36) PRIMARY KEY NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    is_private BOOLEAN NOT NULL
+);
+
+CREATE TABLE task (
+    board_id VARCHAR(36) NOT NULL,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status ENUM('BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE') NOT NULL,
+    `index` INTEGER NOT NULL,
+    FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE
+);
+
+CREATE TABLE chat_message (
+    board_id VARCHAR(36) NOT NULL,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    content TEXT,
+    created_at BIGINT NOT NULL,
+    FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE
+);

@@ -3,7 +3,13 @@ import { Draggable } from '@hello-pangea/dnd';
 import { Task } from './task';
 import { UpdateTaskForm } from './form/UpdateTaskForm';
 
-export const TaskCard = ({ task, position }: { task: Task; position: number }) => {
+interface TaskCardProps {
+  boardId: string;
+  task: Task;
+  position: number;
+};
+
+export const TaskCard = ({ boardId, task, position } : TaskCardProps) => {
   const { title, description, }  = task;
   return (
     <Draggable draggableId={String(task.id)} index={position}>
@@ -26,12 +32,12 @@ export const TaskCard = ({ task, position }: { task: Task; position: number }) =
             <Typography variant='h5' component='div'>
               {title}
             </Typography>
-            <Typography sx={{ wordWrap: 'break-word', wordBreak: 'break-word' }} variant='body2'>
+            <Typography variant='body2'>
               {description.substring(0, Math.min(description.length, 100))}{description.length > 100 ? '...' : ''}
             </Typography>
             </CardContent>
             <CardActions>
-              <UpdateTaskForm task={task} />
+              <UpdateTaskForm boardId={boardId} task={task} />
             </CardActions>
           </Card>
         </Box>

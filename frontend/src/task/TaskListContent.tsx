@@ -7,24 +7,24 @@ import { TaskColumn } from './TaskColumn';
 import { Task } from './task';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
 
-const baseUrl = import.meta.env.VITE_TASK_BACKEND_BASE_URL;
+interface TaskListContentProps {
+  boardId: string;
+  boardName: string;
+  initialTasks?: Task[];
+}
 
-export const TaskListContent = () => {
+export const TaskListContent = ({ boardId, boardName, initialTasks = [], } : TaskListContentProps) => {
   const stompClient = useStompClient();
 
-  const [tasksByStatus, setTasksByStatus] = useState<TasksByStatus>(
+  const [ tasksByStatus, setTasksByStatus, ] = useState<TasksByStatus>(
     getTasksByStatus([])
   );
 
-  const [ unsortedTasks, setUnsortedTasks ] = useState<Task[]>([]);
+  const [ unsortedTasks, setUnsortedTasks, ] = useState<Task[]>([]);
 
   useEffect(() => {
-    fetch(`${baseUrl}/tasks`)
-      .then((response) => response.json())
-      .then((data) => {
-        setUnsortedTasks(data);
-    });
-    }, []);
+    setUnsortedTasks(initialTasks);
+  }, [ initialTasks, ]);
 
   useEffect(() => {
     const newTasksByStatus = getTasksByStatus(unsortedTasks);
@@ -34,12 +34,13 @@ export const TaskListContent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unsortedTasks]);
 
-  useSubscription('/topic/new-task', (message) => {
+  useSubscription(`/topic/${boardId}/new-task`, (message) => {
+    console.log("Got new task!")
     const task: Task = JSON.parse(message.body);
-    setUnsortedTasks((prevTasks) => [ ...prevTasks, task ]);
+    setUnsortedTasks((prevTasks) => [ ...prevTasks, task, ]);
   });
 
-  useSubscription('/topic/update-tasks', (message) => {
+  useSubscription(`/topic/${boardId}/update-tasks`, (message) => {
     const updatedTasks: Task[] = JSON.parse(message.body);
     setUnsortedTasks((prevTasks) => prevTasks.map(prevTask => {
       const updatedTask = updatedTasks.find(task => task.id === prevTask.id);
@@ -109,14 +110,14 @@ export const TaskListContent = () => {
     const task: Task = { ...sourceTask, index: destination.index, status: destinationStatus, };
 
     stompClient?.publish({
-      destination: '/app/update-task/' + sourceTask.id,
+      destination: `/app/${boardId}/update-task/${sourceTask.id}`,
       body: JSON.stringify(task)
     });
   }
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Typography variant='h4' align='center' paddingTop='10px' width='100%'>Board Name</Typography>
+      <Typography variant='h4' align='center' paddingTop='10px' width='100%'>{boardName}</Typography>
       <Stack
         direction='row'
         divider={<Divider orientation="vertical" flexItem />}
@@ -124,8 +125,9 @@ export const TaskListContent = () => {
         sx={{ paddingTop: 3, }}>
         {statuses.map((status) => (
           <TaskColumn
-            status={status}
+            boardId={boardId}
             tasks={tasksByStatus[status]}
+            status={status}
             key={status}
           />
         ))}

@@ -5,9 +5,10 @@ import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
 
 interface UpdateTaskFormProps {
+  boardId: string;
   task: Task
 }
-export const UpdateTaskForm = ({ task }: UpdateTaskFormProps) => {
+export const UpdateTaskForm = ({ boardId, task }: UpdateTaskFormProps) => {
   const stompClient = useStompClient();
 
   const [ isOpen, setIsOpen, ] = useState<boolean>(false);
@@ -20,7 +21,7 @@ export const UpdateTaskForm = ({ task }: UpdateTaskFormProps) => {
     const updatedTask: Task = { ...task, title, description, };
 
     stompClient?.publish({
-      destination: '/app/update-task/' + task.id,
+      destination: `/app/${boardId}/update-task/${task.id}`,
       body: JSON.stringify(updatedTask)
     });
   }

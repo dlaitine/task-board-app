@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fi.dlaitine</groupId>
-	<artifactId>task-backend</artifactId>
+	<artifactId>task-board-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>task-backend</name>
-	<description>Task collaboration demo project with REST API and sockets</description>
+	<name>task-board-backend</name>
+	<description>Task board demo project with REST API and sockets</description>
 	<licenses>
 		<license/>
 	</licenses>

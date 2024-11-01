@@ -1,5 +1,5 @@
 {
-  "name": "task-frontend",
+  "name": "task-board-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -20,6 +20,7 @@
     "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0",
     "react-stomp-hooks": "^3.0.1"
   },
   "devDependencies": {

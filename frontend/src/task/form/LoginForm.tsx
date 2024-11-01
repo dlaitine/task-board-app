@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText, } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText, Typography, } from '@mui/material';
 import { LoginContext } from '../context/LoginContext';
 
 
@@ -14,7 +14,7 @@ export const LoginForm = () => {
   const [usernameError, setUsernameError] = useState<string>('');
 
   const handleSubmit = () => {
-    if (username === '') {
+    if (username.trim() === '') {
       setUsernameError('Required')
       return;
     }
@@ -25,10 +25,16 @@ export const LoginForm = () => {
   return (
     <>
       <Dialog open={loggedInUsername == null}>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+        }}>
         <DialogTitle variant='h5'>Login</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Welcome to Task App! Please login to continue. No passwords required at this time!
+            <Typography>
+              Welcome to Task Board App! Please login to continue. No passwords required at this time!
+            </Typography>
           </DialogContentText>
           <TextField
             label='Username'
@@ -40,15 +46,16 @@ export const LoginForm = () => {
             error={usernameError !== ''}
             helperText={usernameError}
             slotProps={{
-              htmlInput: { maxLength: 25 }
+              htmlInput: { maxLength: 50 }
             }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} color='primary' variant='contained'>
+          <Button type='submit' color='primary' variant='contained'>
             Login
           </Button>
         </DialogActions>
+        </form>
       </Dialog>
     </>
   );

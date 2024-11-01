@@ -8,9 +8,13 @@ import { useStompClient, useSubscription } from 'react-stomp-hooks';
 import { Message, NewMessage } from './chat';
 import { LoginContext } from '../context/LoginContext';
 
-const baseUrl = import.meta.env.VITE_TASK_BACKEND_BASE_URL;
+interface ChatWindowProps {
+  boardId: string;
+  boardName: string;
+  chatHistory?: Message[];
+};
 
-const ChatWindow = () => {
+const ChatWindow = ({ boardId, boardName, chatHistory=[], } : ChatWindowProps) => {
   const { username: loggedInUsername, } = useContext(LoginContext);
 
   const stompClient = useStompClient();
@@ -22,16 +26,12 @@ const ChatWindow = () => {
   const [newMessage, setNewMessage] = useState<string>('');
 
   const [unseenMessages, setUnseenMessages] = useState<boolean>(false);
-
-  useEffect(() => {
-    fetch(`${baseUrl}/chats`)
-      .then((response) => response.json())
-      .then((data) => {
-        setMessages(data);
-    });
-  }, []);
   
-  useSubscription('/topic/chat-message', (message) => {
+  useEffect(() => {
+    setMessages(chatHistory);
+  }, [ chatHistory, ]);
+  
+  useSubscription(`/topic/${boardId}/new-chat-message`, (message) => {
     const chatMessage: Message = JSON.parse(message.body);
     if (!chatOpen) {
       setUnseenMessages(true);
@@ -55,7 +55,7 @@ const ChatWindow = () => {
       };
 
       stompClient?.publish({
-        destination: '/app/chat-message',
+        destination: `/app/${boardId}/new-chat-message`,
         body: JSON.stringify(message)
       });
 
@@ -95,7 +95,7 @@ const ChatWindow = () => {
           background: '#FFFFFF',
           marginBottom: '20px !important'
         }}>
-        <Typography variant='h5' align='center'>Chat</Typography>
+        <Typography variant='h5' align='center'>{boardName} Chat</Typography>
         <Grid
           container
           sx={{
@@ -106,8 +106,8 @@ const ChatWindow = () => {
         >
           <Box id='chat-window' p={2} sx={{ maxHeight: '400px', minHeight: '200px', width: '100%', float: 'left', overflowY: 'auto', }}>
             {messages.map((message) => (
-              <Typography key={message.id} style={{ padding: '6px', wordWrap: 'break-word', wordBreak: 'break-word' }}>
-                [{new Date(message.createdAt).toLocaleString('FI-fi')}] <b>{message.username}: </b>{message.content}
+              <Typography key={message.id} style={{ padding: '6px', }}>
+                [{new Date(message.created_at).toLocaleString('FI-fi')}] <b>{message.username}: </b>{message.content}
               </Typography>
             ))}
           </Box>
@@ -124,7 +124,7 @@ const ChatWindow = () => {
                       width: '300px'
                     }
                   }}
-                  autoComplete="false"
+                  autoComplete="off"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   label='Type message here'

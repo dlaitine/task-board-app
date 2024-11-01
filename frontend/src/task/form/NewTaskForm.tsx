@@ -5,7 +5,11 @@ import { Fab } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useState } from 'react';
 
-export const NewTaskForm = () => {
+interface NewTaskFormProps {
+  boardId: string;
+};
+
+export const NewTaskForm = ({ boardId, } : NewTaskFormProps) => {
   const stompClient = useStompClient();
 
   const [ isOpen, setIsOpen, ] = useState<boolean>(false);
@@ -18,7 +22,7 @@ export const NewTaskForm = () => {
     const newTask: NewTask = { title, description, };
 
     stompClient?.publish({
-      destination: '/app/new-task',
+      destination: `/app/${boardId}/new-task`,
       body: JSON.stringify(newTask)
     });
   }
