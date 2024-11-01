@@ -6,31 +6,62 @@ import { useContext, useEffect, useState } from 'react';
 import { Board, NewBoard } from './board';
 import { useNavigate } from 'react-router-dom';
 import { LoginContext } from './context/LoginContext';
+import { NotificationContext } from './context/NotificationContext';
+import LoadingSpinner from './LoadingSpinner';
 
 const baseUrl = import.meta.env.VITE_TASK_BACKEND_BASE_URL;
 
 export const HomePage = () => {
+  const navigate = useNavigate();
+
   const [ boards, setBoards, ] = useState<Board[]>([]);
   const [ newBoardName, setNewBoardName, ] = useState('');
   const [ isPrivate, setIsPrivate, ] = useState(false);
 
   const [ boardNameError, setBoardNameError, ] = useState<string>('');
 
+  const [ loading, setLoading, ] = useState<boolean>(false);
+
+  const [ submitIsClicked, setSubmitIsClicked, ] = useState<boolean>(false);
+
+  const { setMessage, setSeverity, } = useContext(NotificationContext);
   const { username, } = useContext(LoginContext);
 
-  let navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${baseUrl}/boards/public`)
-      .then((response) => response.json())
+    const controller = new AbortController();
+    setLoading(true);
+    fetch(`${baseUrl}/boards`)
+      .then((response) => {
+        if (!response.ok) {
+          throw Error('Board fetching failed')
+        }
+        return response.json();
+      })
       .then((data) => {
         setBoards(data);
-    });
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) {
+          setSeverity('error');
+          setMessage(error.message);
+        }
+      });
+
+    return () => {
+      controller.abort(); // Cancel the fetch request when the component is unmounted
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCreateBoard = () => {
+    setSubmitIsClicked(true);
     if (newBoardName.trim() === '') {
       setBoardNameError('Required');
+      setSubmitIsClicked(false);
       return;
     }
 
@@ -46,9 +77,24 @@ export const HomePage = () => {
       },
       body: JSON.stringify(newBoard)
     })
+    .then((response) => {
+      if (!response.ok) {
+        throw Error('Board creation failed')
+      }
+      return response;
+    })
     .then((response) => response.json())
     .then((data) => {
+      setSeverity('success');
+      setMessage('New board \'' + newBoardName + '\' created successfully');
       navigate(`/${data.id}`)
+    })
+    .finally(() => {
+      setSubmitIsClicked(false);
+    })
+    .catch((error) => {
+      setSeverity('error');
+      setMessage(error.message);
     });
   };
 
@@ -63,25 +109,29 @@ export const HomePage = () => {
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='40vh'>
         <Grid container spacing={2} columns={11} sx={{ flexDirection: { xs: "column", md: "row", lg: 'row', } }}>
           <Grid size={{ xs: 10, md: 5, lg: 5 }}>
-            <Box padding={2} >
+            <Box padding={2}>
               <Typography variant='h4'>Public boards</Typography>
-              <List sx={{ width: '100%', maxWidth: 360, maxHeight: 360, overflow: 'auto', bgcolor: 'background.paper', }}>
-                {boards.map((board) => {
-                  return (
-                    <ListItem
-                      key={board.id}
-                      disablePadding
-                    >
-                      <ListItemButton  dense href={"/" + board.id} >
-                        <ListItemText id={board.id} primary={board.name} />
-                        <IconButton disableRipple edge="end" aria-label="goto" sx={{ padding: 0, }}>
-                          <NavigateNextIcon />
-                        </IconButton>
-                      </ListItemButton>
-                    </ListItem>
-                  );
-                })}
-              </List>
+              {
+                loading ?
+                <LoadingSpinner /> :
+                <List sx={{ width: '100%', maxWidth: 360, maxHeight: 360, overflow: 'auto', bgcolor: 'background.paper', }}>
+                  {boards.map((board) => {
+                    return (
+                      <ListItem
+                        key={board.id}
+                        disablePadding
+                      >
+                        <ListItemButton  dense onClick={() => navigate("/" + board.id)}>
+                          <ListItemText id={board.id} primary={board.name} />
+                          <IconButton disableRipple edge="end" aria-label="goto" sx={{ padding: 0, }}>
+                            <NavigateNextIcon />
+                          </IconButton>
+                        </ListItemButton>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              }
             </Box>
             <Box padding={2}>
               <Typography variant='h4'>Private boards</Typography>
@@ -122,7 +172,7 @@ export const HomePage = () => {
                     slotProps={{
                       htmlInput: { maxLength: 100 }
                     }} />
-                  <Button type='submit' variant='contained' color='primary' style={{ marginLeft: '10px' }}>
+                  <Button type='submit' disabled={submitIsClicked} variant='contained' color='primary' sx={{ marginLeft: '10px', minWidth: 'max-content', }}>
                     Create
                   </Button>
                 </Box>

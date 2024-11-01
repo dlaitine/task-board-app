@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { createTheme, ThemeProvider } from '@mui/material'
 import  '@fontsource/neucha';
 import { StompSessionProvider } from 'react-stomp-hooks'
+import { NotificationProvider } from './task/context/NotificationContext.tsx'
 
 const theme = createTheme({
   typography: {
@@ -27,7 +28,9 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <LoginProvider>
           <StompSessionProvider url={`${baseUrl}/ws`}>
-            <App />
+            <NotificationProvider>
+              <App />
+            </NotificationProvider>
           </StompSessionProvider>
         </LoginProvider>
       </BrowserRouter>

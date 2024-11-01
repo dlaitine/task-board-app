@@ -33,12 +33,12 @@ public class BoardRestController {
         this.boardService = boardService;
     }
 
-    @GetMapping("/public")
+    @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> getPublicBoards() {
         return ResponseEntity.ok(boardService.getPublicBoards());
     }
 
-    @GetMapping("/{boardId}")
+    @GetMapping(value = "/{boardId}", params = { "includeTasks", "includeChatMessages" })
     public ResponseEntity<BoardResponseDto> getBoard(
             @PathVariable UUID boardId,
             @RequestParam(value = "includeTasks", required = false, defaultValue = "false") boolean includeTasks,
@@ -56,5 +56,12 @@ public class BoardRestController {
         LOGGER.warn("Exception when fetching board: {}", e.getMessage(), e);
         return ResponseEntity.notFound().build();
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> handleException(Exception e) {
+        LOGGER.warn("Exception was thrown during board management: {}", e.getMessage(), e);
+        return ResponseEntity.internalServerError().build();
+    }
+
 
 }

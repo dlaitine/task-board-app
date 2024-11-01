@@ -5,10 +5,19 @@ import { Route, Routes } from 'react-router-dom';
 import { BoardPage } from './task/BoardPage';
 import { HomePage } from './task/HomePage';
 import { ResponsiveAppBar } from './task/ResponsiveAppBar';
-import { SocketErrorPopUp } from './task/error/SocketErrorPopUp';
+import { ErrorPopUp } from './task/error/ErrorPopUp';
+import { useSubscription } from 'react-stomp-hooks';
+import { NotificationContext } from './task/context/NotificationContext';
+import { NotFoundPage } from './task/error/NotFoundPage';
 
 const App = () => {
   const { username, }  = useContext(LoginContext);
+  const { setMessage, setSeverity, } = useContext(NotificationContext);
+
+  useSubscription('/user/topic/error', (error) => {
+    setMessage(error.body);
+    setSeverity('error');
+  });
 
   if (!username) {
     return <LoginForm />;
@@ -17,10 +26,11 @@ const App = () => {
   return (
     <>
       <ResponsiveAppBar />
-      <SocketErrorPopUp />
+      <ErrorPopUp />
       <Routes>
-        <Route path="/" element={<HomePage />}></Route>
-        <Route path="/:boardId" element={<BoardPage />}></Route>
+        <Route path='/' element={<HomePage />}></Route>
+        <Route path='/:boardId' element={<BoardPage />}></Route>
+        <Route path='/not-found' element={<NotFoundPage />}></Route>
       </Routes>
     </>
   );

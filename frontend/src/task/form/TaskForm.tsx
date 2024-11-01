@@ -16,6 +16,8 @@ export const TaskForm = ({ isOpen, onClose, dialogTitle, onSubmit, defaultTitle 
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
+  const [ submitIsClicked, setSubmitIsClicked, ] = useState<boolean>(false);
+
   // Errors
   const [titleError, setTitleError] = useState<string>('');
 
@@ -28,6 +30,7 @@ export const TaskForm = ({ isOpen, onClose, dialogTitle, onSubmit, defaultTitle 
   const handleSubmit = () => {
     if (title === '') {
       setTitleError('Required')
+      setSubmitIsClicked(false);
       return;
     }
 
@@ -36,6 +39,7 @@ export const TaskForm = ({ isOpen, onClose, dialogTitle, onSubmit, defaultTitle 
     setTitle(defaultTitle);
     setDescription(defaultDescription);
     setTitleError('');
+    setSubmitIsClicked(false);
 
     onClose();
   };
@@ -69,7 +73,7 @@ export const TaskForm = ({ isOpen, onClose, dialogTitle, onSubmit, defaultTitle 
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} color='primary' variant='contained'>
+          <Button onClick={handleSubmit} disabled={submitIsClicked} color='primary' variant='contained'>
             Save
           </Button>
           <Button onClick={onClose} color='secondary'>

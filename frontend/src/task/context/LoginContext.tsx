@@ -26,7 +26,7 @@ export const LoginProvider = ({ children } : { children: React.ReactNode }) => {
   const logoutHandler = () => {
     localStorage.removeItem('username');
     setUsername(null);
-    navigate('');
+    navigate('/');
   };
 
   const loginContextValue: LoginContextProps = {

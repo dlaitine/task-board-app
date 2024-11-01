@@ -35,7 +35,6 @@ export const TaskListContent = ({ boardId, boardName, initialTasks = [], } : Tas
   }, [unsortedTasks]);
 
   useSubscription(`/topic/${boardId}/new-task`, (message) => {
-    console.log("Got new task!")
     const task: Task = JSON.parse(message.body);
     setUnsortedTasks((prevTasks) => [ ...prevTasks, task, ]);
   });
