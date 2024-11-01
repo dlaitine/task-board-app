@@ -10,6 +10,15 @@ import { NotificationProvider } from './context/NotificationContext.tsx'
 import { baseUrl } from './constants.ts'
 
 const theme = createTheme({
+  components: {
+    MuiDialogContentText: {
+      styleOverrides: {
+        root: {
+          color: '#0077B6',
+        }
+      }
+    }
+  },
   typography: {
     fontFamily: 'Neucha',
     allVariants: {

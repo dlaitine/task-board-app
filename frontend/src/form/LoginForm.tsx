@@ -2,8 +2,6 @@ import { useContext, useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText, Typography, } from '@mui/material';
 import { LoginContext } from '../context/LoginContext';
 
-
-
 export const LoginForm = () => {
   const { username: loggedInUsername, login } = useContext(LoginContext);
 
@@ -31,10 +29,8 @@ export const LoginForm = () => {
         }}>
         <DialogTitle variant='h5'>Login</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <Typography>
-              Welcome to Task Board App! Please login to continue. No passwords required at this time!
-            </Typography>
+          <DialogContentText variant='body1'>
+            Welcome to Task Board App! Please login to continue. No passwords required at this time!
           </DialogContentText>
           <TextField
             label='Username'
