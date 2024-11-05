@@ -85,8 +85,8 @@ export const BoardProvider = ({ children } : BoardProviderProps) => {
       })
       .then((data) => {
         setBoardName(data.name);
-        setTasks(data.tasks);
-        setMessages(data.chat_messages);
+        setTasks(prevTasks => [ ...data.tasks, ...prevTasks, ]);
+        setMessages(prevMessages => [ ...data.chat_messages, ...prevMessages, ]);
       })
       .finally(() => {
         if (!controller.signal.aborted) {
