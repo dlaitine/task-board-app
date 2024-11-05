@@ -12,7 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useContext, useState } from 'react';
 import { AccountCircle } from '@mui/icons-material';
-import { LoginContext } from './context/LoginContext';
+import { LoginContext } from '../context/LoginContext';
 import { useNavigate } from "react-router-dom";
 
 export const ResponsiveAppBar = () => {

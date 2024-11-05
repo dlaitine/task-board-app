@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { LoginContext } from './context/LoginContext';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { NewBoardForm } from './board/NewBoardForm';
+import { NewBoardForm } from './board/form/NewBoardForm';
 import { PublicBoardList } from './board/PublicBoardList';
 import { PrivateBoardList } from './board/PrivateBoardList';
 

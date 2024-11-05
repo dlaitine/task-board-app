@@ -1,15 +1,15 @@
 import { TaskForm } from './TaskForm';
-import { Task } from '../task/task';
-import { useStompClient } from 'react-stomp-hooks';
+import { Task, UpdateTask } from '../task';
 import { Button, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { BoardContext } from '../../context/BoardContext';
 
 interface UpdateTaskFormProps {
-  boardId: string;
-  task: Task
+  task: Task;
 }
-export const UpdateTaskForm = ({ boardId, task }: UpdateTaskFormProps) => {
-  const stompClient = useStompClient();
+export const UpdateTaskForm = ({ task, }: UpdateTaskFormProps) => {
+
+  const { updateTask, } = useContext(BoardContext);
 
   const [ isOpen, setIsOpen, ] = useState<boolean>(false);
 
@@ -18,12 +18,9 @@ export const UpdateTaskForm = ({ boardId, task }: UpdateTaskFormProps) => {
   };
 
   const submitUpdateTask = (title: string, description: string) => {
-    const updatedTask: Task = { ...task, title, description, };
+    const updatedTask: UpdateTask = { ...task, title, description, };
 
-    stompClient?.publish({
-      destination: `/app/${boardId}/update-task/${task.id}`,
-      body: JSON.stringify(updatedTask)
-    });
+    updateTask(task.id, updatedTask);
   }
 
   return (

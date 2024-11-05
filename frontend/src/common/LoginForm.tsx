@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText, Typography, } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText } from '@mui/material';
 import { LoginContext } from '../context/LoginContext';
 
 export const LoginForm = () => {

@@ -1,15 +1,14 @@
 import { Box, Card, CardContent, CardActions, Typography } from '@mui/material';
 import { Draggable } from '@hello-pangea/dnd';
 import { Task } from './task';
-import { UpdateTaskForm } from '../form/UpdateTaskForm';
+import { UpdateTaskForm } from './form/UpdateTaskForm';
 
 interface TaskCardProps {
-  boardId: string;
   task: Task;
   position: number;
 };
 
-export const TaskCard = ({ boardId, task, position } : TaskCardProps) => {
+export const TaskCard = ({ task, position } : TaskCardProps) => {
   const { title, description, }  = task;
   return (
     <Draggable draggableId={String(task.id)} index={position}>
@@ -37,7 +36,7 @@ export const TaskCard = ({ boardId, task, position } : TaskCardProps) => {
             </Typography>
             </CardContent>
             <CardActions>
-              <UpdateTaskForm boardId={boardId} task={task} />
+              <UpdateTaskForm task={task} />
             </CardActions>
           </Card>
         </Box>

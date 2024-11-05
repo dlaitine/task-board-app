@@ -1,16 +1,13 @@
 import { TaskForm } from './TaskForm';
-import { NewTask } from '../task/task';
-import { useStompClient } from 'react-stomp-hooks';
+import { NewTask } from '../task';
 import { Fab } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { BoardContext } from '../../context/BoardContext';
 
-interface NewTaskFormProps {
-  boardId: string;
-};
+export const NewTaskForm = () => {
 
-export const NewTaskForm = ({ boardId, } : NewTaskFormProps) => {
-  const stompClient = useStompClient();
+  const { createTask, } = useContext(BoardContext);
 
   const [ isOpen, setIsOpen, ] = useState<boolean>(false);
 
@@ -20,11 +17,8 @@ export const NewTaskForm = ({ boardId, } : NewTaskFormProps) => {
 
   const submitNewTask = (title: string, description: string) => {
     const newTask: NewTask = { title, description, };
-
-    stompClient?.publish({
-      destination: `/app/${boardId}/new-task`,
-      body: JSON.stringify(newTask)
-    });
+    
+    createTask(newTask);
   }
 
   return (

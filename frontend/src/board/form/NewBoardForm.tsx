@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import { NewBoard } from "./board";
+import { NewBoard } from "../board";
 import { Box, Typography, FormGroup, FormControlLabel, Switch, Tooltip, TextField, Button } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
-import { baseUrl } from "../constants";
-import { NotificationContext } from "../context/NotificationContext";
+import { baseUrl } from "../../common/constants";
+import { NotificationContext } from "../../context/NotificationContext";
 import { useNavigate } from "react-router-dom";
 
 export const NewBoardForm = () => {

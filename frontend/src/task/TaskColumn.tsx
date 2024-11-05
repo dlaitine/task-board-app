@@ -3,14 +3,14 @@ import { Droppable } from '@hello-pangea/dnd';
 import { Task } from './task';
 import { statusNames } from './statuses';
 import { TaskCard } from './TaskCard';
+import { memo } from 'react';
 
 interface TaskColumnProps {
-  boardId: string;
   status: Task['status'];
   tasks: Task[];
 };
 
-export const TaskColumn = ({ boardId, status, tasks } : TaskColumnProps) => (
+export const TaskColumn = memo(({ status, tasks } : TaskColumnProps) => (
   <Box
     sx={{
       flex: 1,
@@ -47,11 +47,11 @@ export const TaskColumn = ({ boardId, status, tasks } : TaskColumnProps) => (
         }}
       >
         {tasks.map((task, position) => (
-           <TaskCard boardId={boardId} key={task.id} task={task} position={position} />
+           <TaskCard key={task.id} task={task} position={position} />
          ))}
          {droppableProvided.placeholder}
       </Box>
       )}
     </Droppable>
-  </Box>
+  </Box>)
 );

@@ -1,51 +1,26 @@
 import { Divider, Stack, Typography } from '@mui/material';
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import { isEqual } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { getTasksByStatus, statuses, TasksByStatus } from './statuses';
 import { TaskColumn } from './TaskColumn';
 import { Task } from './task';
-import { useStompClient, useSubscription } from 'react-stomp-hooks';
+import { BoardContext } from '../context/BoardContext';
 
-interface TaskListContentProps {
-  boardId: string;
-  boardName: string;
-  initialTasks?: Task[];
-}
-
-export const TaskListContent = ({ boardId, boardName, initialTasks = [], } : TaskListContentProps) => {
-  const stompClient = useStompClient();
-
+export const TaskListContent = () => {
   const [ tasksByStatus, setTasksByStatus, ] = useState<TasksByStatus>(
     getTasksByStatus([])
   );
 
-  const [ unsortedTasks, setUnsortedTasks, ] = useState<Task[]>([]);
+  const { boardName, tasks, updateTask, } = useContext(BoardContext);
 
   useEffect(() => {
-    setUnsortedTasks(initialTasks);
-  }, [ initialTasks, ]);
-
-  useEffect(() => {
-    const newTasksByStatus = getTasksByStatus(unsortedTasks);
+    const newTasksByStatus = getTasksByStatus(tasks);
     if (!isEqual(newTasksByStatus, tasksByStatus)) {
       setTasksByStatus(newTasksByStatus);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unsortedTasks]);
-
-  useSubscription(`/topic/${boardId}/new-task`, (message) => {
-    const task: Task = JSON.parse(message.body);
-    setUnsortedTasks((prevTasks) => [ ...prevTasks, task, ]);
-  });
-
-  useSubscription(`/topic/${boardId}/update-tasks`, (message) => {
-    const updatedTasks: Task[] = JSON.parse(message.body);
-    setUnsortedTasks((prevTasks) => prevTasks.map(prevTask => {
-      const updatedTask = updatedTasks.find(task => task.id === prevTask.id);
-      return updatedTask ? updatedTask : prevTask; 
-    }));
-  });
+  }, [tasks]);
 
   const updateTaskStatusLocal = (
     sourceTask: Task,
@@ -108,10 +83,7 @@ export const TaskListContent = ({ boardId, boardName, initialTasks = [], } : Tas
 
     const task: Task = { ...sourceTask, index: destination.index, status: destinationStatus, };
 
-    stompClient?.publish({
-      destination: `/app/${boardId}/update-task/${sourceTask.id}`,
-      body: JSON.stringify(task)
-    });
+    updateTask(sourceTask.id, task);
   }
 
   return (
@@ -124,7 +96,6 @@ export const TaskListContent = ({ boardId, boardName, initialTasks = [], } : Tas
         sx={{ paddingTop: 3, }}>
         {statuses.map((status) => (
           <TaskColumn
-            boardId={boardId}
             tasks={tasksByStatus[status]}
             status={status}
             key={status}

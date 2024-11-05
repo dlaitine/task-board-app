@@ -11,7 +11,7 @@ export interface UpdateTask {
 }
 
 export interface Task {
-  id: string;
+  id: number;
   title: string;
   description: string;
   status: 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE';

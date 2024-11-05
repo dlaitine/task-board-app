@@ -1,11 +1,12 @@
 import { Box, IconButton, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../common/LoadingSpinner";
 import { useContext, useEffect, useState } from "react";
 import { Board } from "./board";
 import { useNavigate } from "react-router-dom";
 import { NotificationContext } from "../context/NotificationContext";
-import { baseUrl } from "../constants";
+import { baseUrl } from "../common/constants";
+import { PublicBoardListItem } from "./PublicBoardListItem";
 
 export const PublicBoardList = () => {
   const navigate = useNavigate();
@@ -18,11 +19,13 @@ export const PublicBoardList = () => {
 
   useEffect(() => {
     const controller = new AbortController();
+    const signal = controller.signal;
+
     setLoading(true);
-    fetch(`${baseUrl}/boards`)
+    fetch(`${baseUrl}/boards`, { signal, })
       .then((response) => {
         if (!response.ok) {
-          throw Error('Board fetching failed')
+          throw Error(`Board fetching failed with status: ${response.statusText}`)
         }
         return response.json();
       })
@@ -30,12 +33,14 @@ export const PublicBoardList = () => {
         setBoards(data);
       })
       .finally(() => {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       })
       .catch((error) => {
         if (!controller.signal.aborted) {
           setSeverity('error');
-          setMessage(error.message);
+          setMessage(`Error when fetching public boards: ${error.message}`);
         }
       });
 
@@ -53,19 +58,7 @@ export const PublicBoardList = () => {
         <LoadingSpinner /> :
         <List sx={{ width: '100%', maxWidth: 360, maxHeight: 360, overflow: 'auto', bgcolor: 'background.paper', }}>
           {boards.map((board) => {
-            return (
-              <ListItem
-                key={board.id}
-                disablePadding
-              >
-                <ListItemButton  dense onClick={() => navigate("/" + board.id)}>
-                  <ListItemText id={board.id} primary={board.name} />
-                  <IconButton disableRipple edge="end" aria-label="goto" sx={{ padding: 0, }}>
-                    <NavigateNextIcon />
-                  </IconButton>
-                </ListItemButton>
-              </ListItem>
-            );
+            return <PublicBoardListItem key={board.id} board={board} />
           })}
         </List>
       }

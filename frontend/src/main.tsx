@@ -7,7 +7,7 @@ import { createTheme, ThemeProvider } from '@mui/material'
 import  '@fontsource/neucha';
 import { StompSessionProvider } from 'react-stomp-hooks'
 import { NotificationProvider } from './context/NotificationContext.tsx'
-import { baseUrl } from './constants.ts'
+import { baseUrl } from './common/constants.ts'
 
 const theme = createTheme({
   components: {
