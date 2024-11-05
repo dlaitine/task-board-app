@@ -6,7 +6,8 @@ import { useSubscription } from 'react-stomp-hooks';
 export const ErrorPopUp = () => {
   const [showError, setShowError] = useState(false);
 
-  const { message, setMessage, severity, setSeverity, } = useContext(NotificationContext);
+  const { message, setMessage, severity, setSeverity } =
+    useContext(NotificationContext);
 
   // Subscribe to STOMP errors
   useSubscription('/user/topic/error', (error) => {
@@ -22,7 +23,7 @@ export const ErrorPopUp = () => {
         setMessage('');
       }, 5000);
     }
-  }, [ message, setMessage, ]);
+  }, [message, setMessage]);
 
   return (
     <Snackbar
@@ -30,9 +31,7 @@ export const ErrorPopUp = () => {
       open={showError}
       message={message}
     >
-      <Alert severity={severity}>
-        {message}
-      </Alert>
+      <Alert severity={severity}>{message}</Alert>
     </Snackbar>
   );
 };

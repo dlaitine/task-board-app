@@ -10,7 +10,7 @@ import { LoginForm } from './common/LoginForm';
 import { BoardProvider } from './context/BoardContext';
 
 const App = () => {
-  const { username, } = useContext(LoginContext);
+  const { username } = useContext(LoginContext);
 
   if (!username) {
     return <LoginForm />;
@@ -21,14 +21,16 @@ const App = () => {
       <ResponsiveAppBar />
       <ErrorPopUp />
       <Routes>
-        <Route path='/' element={<HomePage />}></Route>
-        <Route path='/:boardId' element={
-          <BoardProvider>
-            <BoardPage />
-          </BoardProvider>
-        }>
-        </Route>
-        <Route path='/not-found' element={<NotFoundPage />}></Route>
+        <Route path="/" element={<HomePage />}></Route>
+        <Route
+          path="/:boardId"
+          element={
+            <BoardProvider>
+              <BoardPage />
+            </BoardProvider>
+          }
+        ></Route>
+        <Route path="/not-found" element={<NotFoundPage />}></Route>
       </Routes>
     </>
   );

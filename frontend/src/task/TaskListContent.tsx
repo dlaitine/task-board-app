@@ -8,28 +8,27 @@ import { Task } from './task';
 import { BoardContext } from '../context/BoardContext';
 
 export const TaskListContent = () => {
-  const [ tasksByStatus, setTasksByStatus, ] = useState<TasksByStatus>(
-    getTasksByStatus([])
+  const [tasksByStatus, setTasksByStatus] = useState<TasksByStatus>(
+    getTasksByStatus([]),
   );
 
-  const { boardName, tasks, updateTask, } = useContext(BoardContext);
+  const { boardName, tasks, updateTask } = useContext(BoardContext);
 
   useEffect(() => {
     const newTasksByStatus = getTasksByStatus(tasks);
     if (!isEqual(newTasksByStatus, tasksByStatus)) {
       setTasksByStatus(newTasksByStatus);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasks]);
 
   const updateTaskStatusLocal = (
     sourceTask: Task,
     source: { status: Task['status']; index: number },
-    destination: { 
-      status: Task['status']; 
+    destination: {
+      status: Task['status'];
       index?: number;
     },
-    tasksByStatus: TasksByStatus
+    tasksByStatus: TasksByStatus,
   ) => {
     if (source.status === destination.status) {
       const column = tasksByStatus[source.status];
@@ -44,9 +43,9 @@ export const TaskListContent = () => {
       const destinationColumn = tasksByStatus[destination.status];
       sourceColumn.splice(source.index, 1);
       destinationColumn.splice(
-          destination.index ?? destinationColumn.length + 1,
-          0,
-          sourceTask
+        destination.index ?? destinationColumn.length + 1,
+        0,
+        sourceTask,
       );
       return {
         ...tasksByStatus,
@@ -63,8 +62,10 @@ export const TaskListContent = () => {
       return;
     }
 
-    if (destination.droppableId === source.droppableId
-      && destination.index === source.index) {
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
       return;
     }
 
@@ -77,23 +78,30 @@ export const TaskListContent = () => {
         sourceTask,
         { status: sourceStatus, index: source.index },
         { status: destinationStatus, index: destination.index },
-        tasksByStatus
-       )
-     );
+        tasksByStatus,
+      ),
+    );
 
-    const task: Task = { ...sourceTask, index: destination.index, status: destinationStatus, };
+    const task: Task = {
+      ...sourceTask,
+      index: destination.index,
+      status: destinationStatus,
+    };
 
     updateTask(sourceTask.id, task);
-  }
+  };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Typography variant='h4' align='center' paddingTop='10px' width='100%'>{boardName}</Typography>
+      <Typography variant="h4" align="center" paddingTop="10px" width="100%">
+        {boardName}
+      </Typography>
       <Stack
-        direction='row'
+        direction="row"
         divider={<Divider orientation="vertical" flexItem />}
-        display='flex'
-        sx={{ paddingTop: 3, }}>
+        display="flex"
+        sx={{ paddingTop: 3 }}
+      >
         {statuses.map((status) => (
           <TaskColumn
             tasks={tasksByStatus[status]}

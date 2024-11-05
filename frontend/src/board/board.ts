@@ -1,10 +1,9 @@
 export interface NewBoard {
-    name: string;
-    is_private: boolean;
-  }
-  
- export interface Board {
-      id: string;
-      name: string;
-  }
-  
+  name: string;
+  is_private: boolean;
+}
+
+export interface Board {
+  id: string;
+  name: string;
+}

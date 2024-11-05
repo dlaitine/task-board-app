@@ -1,13 +1,13 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import { LoginProvider } from './context/LoginContext.tsx'
-import { BrowserRouter } from 'react-router-dom'
-import { createTheme, ThemeProvider } from '@mui/material'
-import  '@fontsource/neucha';
-import { StompSessionProvider } from 'react-stomp-hooks'
-import { NotificationProvider } from './context/NotificationContext.tsx'
-import { baseUrl } from './common/constants.ts'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
+import { LoginProvider } from './context/LoginContext.tsx';
+import { BrowserRouter } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material';
+import '@fontsource/neucha';
+import { StompSessionProvider } from 'react-stomp-hooks';
+import { NotificationProvider } from './context/NotificationContext.tsx';
+import { baseUrl } from './common/constants.ts';
 
 const theme = createTheme({
   components: {
@@ -15,9 +15,9 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           color: '#0077B6',
-        }
-      }
-    }
+        },
+      },
+    },
   },
   typography: {
     fontFamily: 'Neucha',
@@ -26,7 +26,7 @@ const theme = createTheme({
       wordWrap: 'break-word',
       wordBreak: 'break-word',
       overflowWrap: 'break-word',
-    }
+    },
   },
 });
 
@@ -43,5 +43,5 @@ createRoot(document.getElementById('root')!).render(
         </LoginProvider>
       </BrowserRouter>
     </ThemeProvider>
-  </StrictMode>
-)
+  </StrictMode>,
+);

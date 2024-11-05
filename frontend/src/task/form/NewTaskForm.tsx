@@ -6,20 +6,19 @@ import { useContext, useState } from 'react';
 import { BoardContext } from '../../context/BoardContext';
 
 export const NewTaskForm = () => {
+  const { createTask } = useContext(BoardContext);
 
-  const { createTask, } = useContext(BoardContext);
-
-  const [ isOpen, setIsOpen, ] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const toggleForm = () => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   };
 
   const submitNewTask = (title: string, description: string) => {
-    const newTask: NewTask = { title, description, };
-    
+    const newTask: NewTask = { title, description };
+
     createTask(newTask);
-  }
+  };
 
   return (
     <>
@@ -31,12 +30,17 @@ export const NewTaskForm = () => {
           position: 'fixed',
           bottom: '30px',
           left: '30px',
-          background: '#0077B6'
-      }}>
+          background: '#0077B6',
+        }}
+      >
         <AddCircleIcon />
       </Fab>
-    <TaskForm isOpen={isOpen} onClose={toggleForm} dialogTitle='New task' onSubmit={submitNewTask} />
+      <TaskForm
+        isOpen={isOpen}
+        onClose={toggleForm}
+        dialogTitle="New task"
+        onSubmit={submitNewTask}
+      />
     </>
   );
-
 };

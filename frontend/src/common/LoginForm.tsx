@@ -1,5 +1,13 @@
 import { useContext, useState } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  DialogContentText,
+} from '@mui/material';
 import { LoginContext } from '../context/LoginContext';
 
 export const LoginForm = () => {
@@ -13,7 +21,7 @@ export const LoginForm = () => {
 
   const handleSubmit = () => {
     if (username.trim() === '') {
-      setUsernameError('Required')
+      setUsernameError('Required');
       return;
     }
 
@@ -23,34 +31,37 @@ export const LoginForm = () => {
   return (
     <>
       <Dialog open={loggedInUsername == null}>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-        }}>
-        <DialogTitle variant='h5'>Login</DialogTitle>
-        <DialogContent>
-          <DialogContentText variant='body1'>
-            Welcome to Task Board App! Please login to continue. No passwords required at this time!
-          </DialogContentText>
-          <TextField
-            label='Username'
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            margin='normal'
-            fullWidth
-            required
-            error={usernameError !== ''}
-            helperText={usernameError}
-            slotProps={{
-              htmlInput: { maxLength: 50 }
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button type='submit' color='primary' variant='contained'>
-            Login
-          </Button>
-        </DialogActions>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
+          <DialogTitle variant="h5">Login</DialogTitle>
+          <DialogContent>
+            <DialogContentText variant="body1">
+              Welcome to Task Board App! Please login to continue. No passwords
+              required at this time!
+            </DialogContentText>
+            <TextField
+              label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              margin="normal"
+              fullWidth
+              required
+              error={usernameError !== ''}
+              helperText={usernameError}
+              slotProps={{
+                htmlInput: { maxLength: 50 },
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button type="submit" color="primary" variant="contained">
+              Login
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
     </>

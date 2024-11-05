@@ -6,15 +6,15 @@ import { BoardContext } from '../context/BoardContext';
 import { useContext } from 'react';
 
 export const BoardPage = () => {
-  const { boardInitComplete, } = useContext(BoardContext);
+  const { boardInitComplete } = useContext(BoardContext);
 
-  return (
-    !boardInitComplete ?
-    <LoadingSpinner /> :
+  return !boardInitComplete ? (
+    <LoadingSpinner />
+  ) : (
     <>
       <NewTaskForm />
       <TaskListContent />
       <ChatWindow />
     </>
-  ); 
+  );
 };

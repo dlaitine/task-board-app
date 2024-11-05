@@ -10,13 +10,15 @@ interface LoginContextProps {
 export const LoginContext = createContext<LoginContextProps>({
   username: null,
   login: () => {},
-  logout: () => {}
+  logout: () => {},
 });
 
-export const LoginProvider = ({ children } : { children: React.ReactNode }) => {
+export const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState<string | null>(localStorage.getItem('username') || null);
+  const [username, setUsername] = useState<string | null>(
+    localStorage.getItem('username') || null,
+  );
 
   const loginHandler = (username: string) => {
     localStorage.setItem('username', username);
@@ -32,7 +34,7 @@ export const LoginProvider = ({ children } : { children: React.ReactNode }) => {
   const loginContextValue: LoginContextProps = {
     username,
     login: loginHandler,
-    logout: logoutHandler
+    logout: logoutHandler,
   };
 
   return (

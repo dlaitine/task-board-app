@@ -6,7 +6,7 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: '10%'
+    paddingTop: '10%',
   },
 });
 
@@ -18,6 +18,6 @@ const LoadingSpinner = () => {
       <CircularProgress />
     </div>
   );
-}
+};
 
 export default LoadingSpinner;

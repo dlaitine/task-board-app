@@ -13,12 +13,12 @@ import MenuItem from '@mui/material/MenuItem';
 import { useContext, useState } from 'react';
 import { AccountCircle } from '@mui/icons-material';
 import { LoginContext } from '../context/LoginContext';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export const ResponsiveAppBar = () => {
   const navigate = useNavigate();
 
-  const { username, logout, } = useContext(LoginContext);
+  const { username, logout } = useContext(LoginContext);
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -45,17 +45,17 @@ export const ResponsiveAppBar = () => {
 
   const handleLogout = () => {
     logout();
-  }
+  };
 
   return (
-    <AppBar position='static' sx={{ bgcolor: '#0077B6',}}>
-      <Container maxWidth='xl'>
+    <AppBar position="static" sx={{ bgcolor: '#0077B6' }}>
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <TaskIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, }} />
+          <TaskIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
-            variant='h5'
+            variant="h5"
             noWrap
-            component='p'
+            component="p"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -68,17 +68,17 @@ export const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
-              size='large'
-              aria-label='account of current user'
-              aria-controls='menu-appbar'
-              aria-haspopup='true'
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color='inherit'
+              color="inherit"
             >
               <MenuIcon />
             </IconButton>
             <Menu
-              id='menu-appbar'
+              id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
@@ -93,16 +93,16 @@ export const ResponsiveAppBar = () => {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              <MenuItem key='home' onClick={handleHomeClick}>
+              <MenuItem key="home" onClick={handleHomeClick}>
                 <Typography sx={{ textAlign: 'center' }}>Home</Typography>
               </MenuItem>
             </Menu>
           </Box>
           <TaskIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
-            variant='h5'
+            variant="h5"
             noWrap
-            component='p'
+            component="p"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -116,22 +116,27 @@ export const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button
-              key='home'
+              key="home"
               onClick={handleHomeClick}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               Home
             </Button>
           </Box>
-          <Box sx={{ flexGrow: 0, }}>
+          <Box sx={{ flexGrow: 0 }}>
             <Tooltip title={'Logged in as ' + username}>
-              <IconButton onClick={handleOpenUserMenu} size='large' color='inherit' sx={{ p: 0 }}>
+              <IconButton
+                onClick={handleOpenUserMenu}
+                size="large"
+                color="inherit"
+                sx={{ p: 0 }}
+              >
                 <AccountCircle />
               </IconButton>
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
-              id='menu-appbar'
+              id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: 'top',
@@ -145,10 +150,8 @@ export const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem key='logout' onClick={handleLogout}>
-                <Typography sx={{ textAlign: 'center' }}>
-                  Logout
-                </Typography>
+              <MenuItem key="logout" onClick={handleLogout}>
+                <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
               </MenuItem>
             </Menu>
           </Box>
@@ -156,4 +159,4 @@ export const ResponsiveAppBar = () => {
       </Container>
     </AppBar>
   );
-}
+};

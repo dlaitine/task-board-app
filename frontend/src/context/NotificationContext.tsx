@@ -14,17 +14,19 @@ export const NotificationContext = createContext<NotificationContextProps>({
   setSeverity: () => {},
 });
 
-export const NotificationProvider = ({ children } : { children: React.ReactNode }) => {
-
-  const [ message, setMessage, ] = useState<string>('');
-  const [ severity, setSeverity, ] = useState<'success' | 'error'>('success');
-
+export const NotificationProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [message, setMessage] = useState<string>('');
+  const [severity, setSeverity] = useState<'success' | 'error'>('success');
 
   const notificationContextValue: NotificationContextProps = {
     message,
     setMessage: setMessage,
     severity: severity,
-    setSeverity: setSeverity
+    setSeverity: setSeverity,
   };
 
   return (

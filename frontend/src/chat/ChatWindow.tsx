@@ -8,20 +8,19 @@ import { BoardContext } from '../context/BoardContext';
 import { ChatMessageList } from './ChatMessageList';
 import { ChatMessageForm } from './form/ChatMessageForm';
 
-
 export const ChatWindow = () => {
+  const { boardName, messages, newMessages, setNewMessages, sendMessage } =
+    useContext(BoardContext);
 
-  const { boardName, messages, newMessages, setNewMessages, sendMessage, } = useContext(BoardContext);
-
-  const [ anchorEl, setAnchorEl, ] = useState<null | HTMLElement>(null);
-  const [ chatOpen, setChatOpen, ] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [chatOpen, setChatOpen] = useState<boolean>(false);
 
   const toggleChat = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
     if (newMessages) {
       setNewMessages(false);
     }
-    setChatOpen(prev => !prev);
+    setChatOpen((prev) => !prev);
   };
 
   useEffect(() => {
@@ -30,7 +29,7 @@ export const ChatWindow = () => {
     if (chatWindow) {
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
-  }, [ messages, ]);
+  }, [messages]);
 
   return (
     <>
@@ -42,13 +41,21 @@ export const ChatWindow = () => {
           position: 'fixed',
           bottom: '30px',
           right: '30px',
-          background: '#0077B6'
-        }}>
-        { !chatOpen && newMessages ? <MarkUnreadChatAltIcon /> : chatOpen ? <CancelIcon /> : <ChatIcon /> }
+          background: '#0077B6',
+        }}
+      >
+        {!chatOpen && newMessages ? (
+          <MarkUnreadChatAltIcon />
+        ) : chatOpen ? (
+          <CancelIcon />
+        ) : (
+          <ChatIcon />
+        )}
       </Fab>
-      <Popper open={chatOpen}
+      <Popper
+        open={chatOpen}
         anchorEl={anchorEl}
-        placement='bottom-start'
+        placement="bottom-start"
         sx={{
           height: 'auto',
           width: '400px',
@@ -56,14 +63,17 @@ export const ChatWindow = () => {
           padding: '10px',
           borderRadius: '10px',
           background: '#FFFFFF',
-          marginBottom: '20px !important'
-        }}>
-        <Typography variant='h5' align='center'>{boardName} Chat</Typography>
+          marginBottom: '20px !important',
+        }}
+      >
+        <Typography variant="h5" align="center">
+          {boardName} Chat
+        </Typography>
         <Grid
           container
           sx={{
             '#chat-window > p:nth-of-type(odd)': {
-              background: '#EFEFEF'
+              background: '#EFEFEF',
             },
           }}
         >
