@@ -8,7 +8,7 @@ export const PublicBoardList = () => {
   const { loading, boards, refetch } = usePublicBoards();
 
   return (
-    <Box padding={2}>
+    <Box padding={2} sx={{ width: 360 }}>
       <Typography variant="h4">
         Public boards
         <Tooltip title="Refresh">
@@ -22,9 +22,8 @@ export const PublicBoardList = () => {
       ) : (
         <List
           sx={{
-            width: '100%',
-            maxWidth: 360,
-            maxHeight: 360,
+            width: '90%',
+            maxHeight: 300,
             overflow: 'auto',
             bgcolor: 'background.paper',
           }}

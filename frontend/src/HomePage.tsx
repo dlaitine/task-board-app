@@ -22,9 +22,10 @@ export const HomePage = () => {
           Here you can access public boards and create new ones.
         </Typography>
         <Box
+          paddingTop={2}
           display="flex"
           justifyContent="center"
-          alignItems="center"
+          alignItems="top"
           minHeight="40vh"
         >
           <Grid
