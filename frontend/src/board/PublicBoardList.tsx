@@ -1,16 +1,12 @@
-import { Box, IconButton, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { Box, List, Typography } from "@mui/material";
 import LoadingSpinner from "../common/LoadingSpinner";
 import { useContext, useEffect, useState } from "react";
 import { Board } from "./board";
-import { useNavigate } from "react-router-dom";
 import { NotificationContext } from "../context/NotificationContext";
 import { baseUrl } from "../common/constants";
 import { PublicBoardListItem } from "./PublicBoardListItem";
 
 export const PublicBoardList = () => {
-  const navigate = useNavigate();
-
   const [ boards, setBoards, ] = useState<Board[]>([]);
 
   const [ loading, setLoading, ] = useState<boolean>(false);
