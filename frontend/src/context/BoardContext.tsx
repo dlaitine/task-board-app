@@ -109,6 +109,7 @@ export const BoardProvider = ({ children }: BoardProviderProps) => {
     return () => {
       controller.abort(); // Cancel the fetch request when the component is unmounted
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardId]);
 
   const sendMessage = (newMessage: string) => {
