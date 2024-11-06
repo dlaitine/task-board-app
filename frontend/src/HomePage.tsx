@@ -31,14 +31,23 @@ export const HomePage = () => {
           <Grid
             container
             spacing={2}
-            columns={11}
+            columns={{ xs: 10, md: 11, lg: 11 }}
             sx={{ flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
           >
             <Grid size={{ xs: 10, md: 5, lg: 5 }}>
               <PublicBoardList />
               <PrivateBoardList />
             </Grid>
-            <Divider orientation="vertical" flexItem sx={{ mr: '-1px' }} />
+            <Grid
+              size={{ xs: 0, md: 1, lg: 1 }}
+              container
+              justifyContent="center"
+            >
+              <Divider
+                orientation="vertical"
+                style={{ width: '1px', height: '100%' }}
+              />
+            </Grid>
             <Grid size={{ xs: 10, md: 5, lg: 5 }}>
               <NewBoardForm />
             </Grid>

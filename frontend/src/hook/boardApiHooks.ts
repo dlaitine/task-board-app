@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import { Board } from '../board';
-import { NotificationContext } from '../../context/NotificationContext';
-import { baseUrl } from '../../common/constants';
+import { Board } from '../board/board';
+import { NotificationContext } from '../context/NotificationContext';
+import { baseUrl } from '../common/constants';
 
 export const usePublicBoards = () => {
   const [boards, setBoards] = useState<Board[]>([]);
@@ -37,6 +37,7 @@ export const usePublicBoards = () => {
           setSeverity('error');
           setMessage(`Error when fetching public boards: ${error.message}`);
         }
+        setBoards([]);
       });
   };
 

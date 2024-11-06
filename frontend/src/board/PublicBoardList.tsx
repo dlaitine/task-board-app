@@ -1,7 +1,7 @@
 import { Box, IconButton, List, Tooltip, Typography } from '@mui/material';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { PublicBoardListItem } from './PublicBoardListItem';
-import { usePublicBoards } from './hook/boardApiHooks';
+import { usePublicBoards } from '../hook/boardApiHooks';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 export const PublicBoardList = () => {
