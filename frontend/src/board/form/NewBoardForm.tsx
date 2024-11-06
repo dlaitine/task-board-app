@@ -40,7 +40,7 @@ export const NewBoardForm = () => {
       is_private: isPrivate,
     };
 
-    fetch(`${baseUrl}/boards`, {
+    fetch(`${baseUrl}/api/v1/boards`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

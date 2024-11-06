@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/boards")
+@RequestMapping("/api/v1/boards")
 public class BoardRestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BoardRestController.class);
