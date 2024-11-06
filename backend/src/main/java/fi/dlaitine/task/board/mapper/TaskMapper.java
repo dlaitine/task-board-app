@@ -24,7 +24,7 @@ public class TaskMapper {
                 .title(entity.getTitle())
                 .description(entity.getDescription())
                 .status(mapEnum(entity.getStatus(), TaskStatus.class))
-                .index(entity.getIndex())
+                .position(entity.getPosition())
                 .build();
     }
 

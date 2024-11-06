@@ -1,7 +1,7 @@
 package fi.dlaitine.task.board.mapper;
 
-import fi.dlaitine.task.board.dto.BoardResponseDto;
 import fi.dlaitine.task.board.dto.CreateBoardDto;
+import fi.dlaitine.task.board.dto.BoardResponseDto;
 import fi.dlaitine.task.board.entity.BoardEntity;
 import java.util.List;
 
@@ -21,6 +21,7 @@ public class BoardMapper {
         return BoardResponseDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
+                .isPrivate(entity.isPrivate())
                 .build();
     }
 

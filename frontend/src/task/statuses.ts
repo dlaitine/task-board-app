@@ -30,7 +30,7 @@ export const getTasksByStatus = (unorderedTasks: Task[]) => {
     ),
   );
 
-  const sortByIndex = (a: number | undefined, b: number | undefined) => {
+  const sortByPosition = (a: number | undefined, b: number | undefined) => {
     if (a === b) {
       return 0;
     }
@@ -48,7 +48,7 @@ export const getTasksByStatus = (unorderedTasks: Task[]) => {
   statuses.forEach((status) => {
     tasksByStatus[status] = tasksByStatus[status].sort(
       (recordA: Task, recordB: Task) =>
-        sortByIndex(recordA.index, recordB.index),
+        sortByPosition(recordA.position, recordB.position),
     );
   });
 

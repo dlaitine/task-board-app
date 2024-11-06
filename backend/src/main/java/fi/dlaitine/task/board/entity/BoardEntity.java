@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
@@ -35,6 +36,7 @@ public class BoardEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Accessors(fluent = true)
     @Column(name = "isPrivate", nullable = false)
     private Boolean isPrivate;
 

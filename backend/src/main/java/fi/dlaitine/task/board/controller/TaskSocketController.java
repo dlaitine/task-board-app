@@ -1,9 +1,9 @@
 package fi.dlaitine.task.board.controller;
 
+import fi.dlaitine.task.board.exception.BoardNotFoundException;
 import fi.dlaitine.task.board.dto.CreateTaskDto;
 import fi.dlaitine.task.board.dto.UpdateTaskDto;
 import fi.dlaitine.task.board.dto.TaskResponseDto;
-import fi.dlaitine.task.board.exception.BoardNotFoundException;
 import fi.dlaitine.task.board.exception.TaskNotFoundException;
 import fi.dlaitine.task.board.service.TaskService;
 import jakarta.validation.Valid;

@@ -5,13 +5,13 @@ import { UpdateTaskForm } from './form/UpdateTaskForm';
 
 interface TaskCardProps {
   task: Task;
-  position: number;
+  index: number;
 }
 
-export const TaskCard = ({ task, position }: TaskCardProps) => {
+export const TaskCard = ({ task, index }: TaskCardProps) => {
   const { title, description } = task;
   return (
-    <Draggable draggableId={String(task.id)} index={position}>
+    <Draggable draggableId={String(task.id)} index={index}>
       {(provided, snapshot) => (
         <Box
           sx={{ marginBottom: 1 }}

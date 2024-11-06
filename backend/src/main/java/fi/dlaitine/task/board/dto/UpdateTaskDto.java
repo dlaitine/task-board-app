@@ -21,8 +21,8 @@ public class UpdateTaskDto {
     @NotNull
     private TaskStatus status;
 
-    @JsonProperty("index")
+    @JsonProperty("position")
     @NotNull
-    private Integer index;
+    private Integer position;
 
 }

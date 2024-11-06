@@ -47,7 +47,7 @@ export const TaskColumn = memo(({ status, tasks }: TaskColumnProps) => (
           }}
         >
           {tasks.map((task, position) => (
-            <TaskCard key={task.id} task={task} position={position} />
+            <TaskCard key={task.id} task={task} index={position} />
           ))}
           {droppableProvided.placeholder}
         </Box>

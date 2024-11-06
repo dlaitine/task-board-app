@@ -1,10 +1,10 @@
 package fi.dlaitine.task.board.service;
 
+import fi.dlaitine.task.board.dto.TaskResponseDto;
+import fi.dlaitine.task.board.exception.TaskNotFoundException;
 import fi.dlaitine.task.board.dto.CreateTaskDto;
 import fi.dlaitine.task.board.dto.UpdateTaskDto;
-import fi.dlaitine.task.board.dto.TaskResponseDto;
 import fi.dlaitine.task.board.entity.TaskEntity;
-import fi.dlaitine.task.board.exception.TaskNotFoundException;
 import fi.dlaitine.task.board.mapper.TaskMapper;
 import fi.dlaitine.task.board.repository.TaskRepository;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class TaskService {
         // Add new tasks to backlog
         taskEntity.setStatus(TaskEntity.Status.BACKLOG);
         // Add new tasks to the end of status group
-        taskEntity.setIndex(repository.findMaxIndexForStatusGroup(taskEntity.getStatus()) + 1);
+        taskEntity.setPosition(repository.findMaxIndexForStatusGroup(taskEntity.getStatus()) + 1);
 
         try {
             taskEntity = repository.save(taskEntity);
@@ -59,12 +59,12 @@ public class TaskService {
         TaskEntity originalTask = optionalTask.get();
 
         TaskEntity.Status destinationStatus = TaskEntity.Status.valueOf(updateTask.getStatus().name());
-        List<TaskEntity> movedTasks = handleIndexShifts(originalTask.getStatus(), destinationStatus, originalTask.getIndex(), updateTask.getIndex());
+        List<TaskEntity> movedTasks = handleIndexShifts(originalTask.getStatus(), destinationStatus, originalTask.getPosition(), updateTask.getPosition());
 
         originalTask.setTitle(updateTask.getTitle());
         originalTask.setDescription(updateTask.getDescription());
         originalTask.setStatus(TaskEntity.Status.valueOf(updateTask.getStatus().name()));
-        originalTask.setIndex(updateTask.getIndex());
+        originalTask.setPosition(updateTask.getPosition());
 
         movedTasks.add(originalTask);
 
@@ -104,23 +104,23 @@ public class TaskService {
             int startIndex = originIndex < destinationIndex ? originIndex + 1 : destinationIndex;
             int endIndex = destinationIndex > originIndex ? destinationIndex : originIndex - 1;
 
-            List<TaskEntity> tasks = repository.findByStatusEqualsAndIndexBetween(originStatus, startIndex, endIndex);
+            List<TaskEntity> tasks = repository.findByStatusEqualsAndPositionBetween(originStatus, startIndex, endIndex);
             tasks.forEach(task -> {
-                if (task.getIndex() > originIndex && task.getIndex() <= destinationIndex) {
-                    task.setIndex(task.getIndex() - 1);
+                if (task.getPosition() > originIndex && task.getPosition() <= destinationIndex) {
+                    task.setPosition(task.getPosition() - 1);
                 }
-                else if (task.getIndex() >= destinationIndex && task.getIndex() < originIndex) {
-                    task.setIndex(task.getIndex() + 1);
+                else if (task.getPosition() >= destinationIndex && task.getPosition() < originIndex) {
+                    task.setPosition(task.getPosition() + 1);
                 }
             });
             return tasks;
         } else {
-            List<TaskEntity> originTasks = repository.findByStatusEqualsAndIndexGreaterThan(originStatus, originIndex);
-            originTasks.forEach(task -> task.setIndex(task.getIndex() - 1));
+            List<TaskEntity> originTasks = repository.findByStatusEqualsAndPositionGreaterThan(originStatus, originIndex);
+            originTasks.forEach(task -> task.setPosition(task.getPosition() - 1));
             List<TaskEntity> combinedTasks = new ArrayList<>(originTasks);
 
-            List<TaskEntity> destinationTasks = repository.findByStatusEqualsAndIndexGreaterThanEqual(destinationStatus, destinationIndex);
-            destinationTasks.forEach(task -> task.setIndex(task.getIndex() + 1));
+            List<TaskEntity> destinationTasks = repository.findByStatusEqualsAndPositionGreaterThanEqual(destinationStatus, destinationIndex);
+            destinationTasks.forEach(task -> task.setPosition(task.getPosition() + 1));
             combinedTasks.addAll(destinationTasks);
 
             return combinedTasks;

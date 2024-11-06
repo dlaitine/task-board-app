@@ -15,7 +15,7 @@ export const usePublicBoards = () => {
     const signal = controller.signal;
 
     setLoading(true);
-    fetch(`${baseUrl}/boards`, { signal })
+    fetch(`${baseUrl}/api/v1/boards`, { signal })
       .then((response) => {
         if (!response.ok) {
           throw Error(

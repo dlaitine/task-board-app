@@ -18,6 +18,9 @@ public class BoardResponseDto {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("is_private")
+    private Boolean isPrivate;
+
     @JsonProperty("tasks")
     private List<TaskResponseDto> tasks;
 

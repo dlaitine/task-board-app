@@ -20,7 +20,7 @@ public class TaskResponseDto {
     @JsonProperty("status")
     private TaskStatus status;
 
-    @JsonProperty("index")
-    private Integer index;
+    @JsonProperty("position")
+    private Integer position;
 
 }

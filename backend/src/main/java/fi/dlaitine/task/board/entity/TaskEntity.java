@@ -43,8 +43,8 @@ public class TaskEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column(name = "`index`", nullable = false)
-    private Integer index;
+    @Column(name = "position", nullable = false)
+    private Integer position;
 
     public enum Status {
         TODO,

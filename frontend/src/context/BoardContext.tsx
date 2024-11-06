@@ -78,7 +78,7 @@ export const BoardProvider = ({ children }: BoardProviderProps) => {
     const signal = controller.signal;
 
     fetch(
-      `${baseUrl}/boards/${boardId}?includeTasks=true&includeChatMessages=true`,
+      `${baseUrl}/api/v1/boards/${boardId}?includeTasks=true&includeChatMessages=true`,
       { signal },
     )
       .then((response) => {

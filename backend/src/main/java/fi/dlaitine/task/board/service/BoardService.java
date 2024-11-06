@@ -2,12 +2,12 @@ package fi.dlaitine.task.board.service;
 
 import fi.dlaitine.task.board.dto.BoardResponseDto;
 import fi.dlaitine.task.board.dto.CreateBoardDto;
-import fi.dlaitine.task.board.entity.BoardEntity;
 import fi.dlaitine.task.board.exception.BoardNotFoundException;
 import fi.dlaitine.task.board.mapper.BoardMapper;
+import fi.dlaitine.task.board.repository.BoardRepository;
+import fi.dlaitine.task.board.entity.BoardEntity;
 import fi.dlaitine.task.board.mapper.ChatMessageMapper;
 import fi.dlaitine.task.board.mapper.TaskMapper;
-import fi.dlaitine.task.board.repository.BoardRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

@@ -85,7 +85,7 @@ export const TaskListContent = () => {
 
     const task: Task = {
       ...sourceTask,
-      index: destination.index,
+      position: destination.index,
       status: destinationStatus,
     };
 

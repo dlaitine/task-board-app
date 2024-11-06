@@ -15,12 +15,12 @@ public interface TaskRepository extends CrudRepository<TaskEntity, Integer> {
 
     Optional<TaskEntity> findByBoardIdAndId(UUID boardId, Integer id);
 
-    List<TaskEntity> findByStatusEqualsAndIndexBetween(TaskEntity.Status status, int start, int end);
+    List<TaskEntity> findByStatusEqualsAndPositionBetween(TaskEntity.Status status, int start, int end);
 
-    List<TaskEntity> findByStatusEqualsAndIndexGreaterThan(TaskEntity.Status status, int index);
+    List<TaskEntity> findByStatusEqualsAndPositionGreaterThan(TaskEntity.Status status, int index);
 
-    List<TaskEntity> findByStatusEqualsAndIndexGreaterThanEqual(TaskEntity.Status status, int index);
+    List<TaskEntity> findByStatusEqualsAndPositionGreaterThanEqual(TaskEntity.Status status, int index);
 
-    @Query(value="SELECT COALESCE(MAX(`index`), -1) FROM task WHERE status = ?1", nativeQuery=true)
+    @Query(value="SELECT COALESCE(MAX(position), -1) FROM task WHERE status = ?1", nativeQuery=true)
     Integer findMaxIndexForStatusGroup(TaskEntity.Status status);
 }

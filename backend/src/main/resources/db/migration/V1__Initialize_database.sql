@@ -10,7 +10,7 @@ CREATE TABLE task (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     status ENUM('BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE') NOT NULL,
-    `index` INTEGER NOT NULL,
+    position INTEGER NOT NULL,
     FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE
 );
 
