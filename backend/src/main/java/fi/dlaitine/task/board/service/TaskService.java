@@ -36,7 +36,7 @@ public class TaskService {
         // Add new tasks to backlog
         taskEntity.setStatus(TaskEntity.Status.BACKLOG);
         // Add new tasks to the end of status group
-        taskEntity.setPosition(repository.findMaxIndexForStatusGroup(taskEntity.getStatus()) + 1);
+        taskEntity.setPosition(repository.findMaxPositionForStatusGroup(taskEntity.getStatus()) + 1);
 
         try {
             taskEntity = repository.save(taskEntity);
@@ -59,7 +59,7 @@ public class TaskService {
         TaskEntity originalTask = optionalTask.get();
 
         TaskEntity.Status destinationStatus = TaskEntity.Status.valueOf(updateTask.getStatus().name());
-        List<TaskEntity> movedTasks = handleIndexShifts(originalTask.getStatus(), destinationStatus, originalTask.getPosition(), updateTask.getPosition());
+        List<TaskEntity> movedTasks = handlePositionShifts(originalTask.getStatus(), destinationStatus, originalTask.getPosition(), updateTask.getPosition());
 
         originalTask.setTitle(updateTask.getTitle());
         originalTask.setDescription(updateTask.getDescription());
@@ -72,54 +72,54 @@ public class TaskService {
     }
 
     /**
-     * Updates indexes for tasks affected by task update.
+     * Updates positions for tasks affected by task update.
      *
      * <p>
      *     If status stays the same:
-     *      - Tasks with same status having index greater than {@code originalIndex} but lower or equal {@code destinationIndex}
-     *        will have their indexes decreased by one
-     *      - Tasks with same status having index greater or equal to {@code destinationIndex} but lower than {@code originalIndex}
-     *        will have their indexes increased by one
+     *      - Tasks with same status having position greater than {@code originalPosition} but lower or equal {@code destinationPosition}
+     *        will have their positions decreased by one
+     *      - Tasks with same status having position greater or equal to {@code destinationPosition} but lower than {@code originalPosition}
+     *        will have their positions increased by one
      *     If task status changes:
-     *      - Tasks with origin status and index greater than {@code originalIndex} will have their index subtracted by one
-     *      - Tasks with destination status and index greater or equal to {@code destinationIndex} index will have their indexes increased by one
+     *      - Tasks with origin status and position greater than {@code originalPosition} will have their positions subtracted by one
+     *      - Tasks with destination status and position greater or equal to {@code destinationPosition} will have their positions increased by one
      * </p>
      * @param originStatus
      *      Original status for task
      * @param destinationStatus
      *      New status for task
-     * @param originIndex
-     *      Original index for task
-     * @param destinationIndex
-     *      Destination index for task
-     * @return tasks which had their indexes updated
+     * @param originPosition
+     *      Original position for task
+     * @param destinationPosition
+     *      Destination position for task
+     * @return tasks which had their positions updated
      */
-    private List<TaskEntity> handleIndexShifts(TaskEntity.Status originStatus, TaskEntity.Status destinationStatus,
-                                               int originIndex, int destinationIndex) {
-        if (originStatus == destinationStatus && originIndex == destinationIndex) {
+    private List<TaskEntity> handlePositionShifts(TaskEntity.Status originStatus, TaskEntity.Status destinationStatus,
+                                                  int originPosition, int destinationPosition) {
+        if (originStatus == destinationStatus && originPosition == destinationPosition) {
             return new ArrayList<>();
         }
 
         if (originStatus == destinationStatus) {
-            int startIndex = originIndex < destinationIndex ? originIndex + 1 : destinationIndex;
-            int endIndex = destinationIndex > originIndex ? destinationIndex : originIndex - 1;
+            int startPosition = originPosition < destinationPosition ? originPosition + 1 : destinationPosition;
+            int endPosition = destinationPosition > originPosition ? destinationPosition : originPosition - 1;
 
-            List<TaskEntity> tasks = repository.findByStatusEqualsAndPositionBetween(originStatus, startIndex, endIndex);
+            List<TaskEntity> tasks = repository.findByStatusEqualsAndPositionBetween(originStatus, startPosition, endPosition);
             tasks.forEach(task -> {
-                if (task.getPosition() > originIndex && task.getPosition() <= destinationIndex) {
+                if (task.getPosition() > originPosition && task.getPosition() <= destinationPosition) {
                     task.setPosition(task.getPosition() - 1);
                 }
-                else if (task.getPosition() >= destinationIndex && task.getPosition() < originIndex) {
+                else if (task.getPosition() >= destinationPosition && task.getPosition() < originPosition) {
                     task.setPosition(task.getPosition() + 1);
                 }
             });
             return tasks;
         } else {
-            List<TaskEntity> originTasks = repository.findByStatusEqualsAndPositionGreaterThan(originStatus, originIndex);
+            List<TaskEntity> originTasks = repository.findByStatusEqualsAndPositionGreaterThan(originStatus, originPosition);
             originTasks.forEach(task -> task.setPosition(task.getPosition() - 1));
             List<TaskEntity> combinedTasks = new ArrayList<>(originTasks);
 
-            List<TaskEntity> destinationTasks = repository.findByStatusEqualsAndPositionGreaterThanEqual(destinationStatus, destinationIndex);
+            List<TaskEntity> destinationTasks = repository.findByStatusEqualsAndPositionGreaterThanEqual(destinationStatus, destinationPosition);
             destinationTasks.forEach(task -> task.setPosition(task.getPosition() + 1));
             combinedTasks.addAll(destinationTasks);
 
