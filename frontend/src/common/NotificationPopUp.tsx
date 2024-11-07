@@ -31,7 +31,9 @@ export const ErrorPopUp = () => {
       open={showError}
       message={message}
     >
-      <Alert severity={severity}>{message}</Alert>
+      <Alert sx={{ width: '100%' }} severity={severity}>
+        {message}
+      </Alert>
     </Snackbar>
   );
 };
