@@ -1,6 +1,5 @@
-package fi.dlaitine.task;
+package fi.dlaitine.task.board;
 
-import fi.dlaitine.task.board.Application;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -38,6 +38,6 @@ public class ChatMessageEntity {
     private String content;
 
     @Column(name = "created_at", nullable = false)
-    private long createdAt;
+    private Long createdAt;
 
 }

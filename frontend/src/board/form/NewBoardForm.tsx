@@ -56,7 +56,7 @@ export const NewBoardForm = () => {
       .then((response) => response.json())
       .then((data) => {
         setSeverity('success');
-        setMessage("New board '" + newBoardName + "' created successfully");
+        setMessage(`New board '${newBoardName}' created successfully`);
         navigate(`/${data.id}`);
       })
       .finally(() => {

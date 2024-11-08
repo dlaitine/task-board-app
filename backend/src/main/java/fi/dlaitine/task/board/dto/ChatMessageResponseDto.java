@@ -19,5 +19,5 @@ public class ChatMessageResponseDto {
 
     // Epoch millis
     @JsonProperty("created_at")
-    private long createdAt;
+    private Long createdAt;
 }

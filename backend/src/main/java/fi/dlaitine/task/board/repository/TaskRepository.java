@@ -22,5 +22,5 @@ public interface TaskRepository extends CrudRepository<TaskEntity, Integer> {
     List<TaskEntity> findByStatusEqualsAndPositionGreaterThanEqual(TaskEntity.Status status, int index);
 
     @Query(value="SELECT COALESCE(MAX(position), -1) FROM task WHERE status = ?1", nativeQuery=true)
-    Integer findMaxIndexForStatusGroup(TaskEntity.Status status);
+    Integer findMaxPositionForStatusGroup(TaskEntity.Status status);
 }
