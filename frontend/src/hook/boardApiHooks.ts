@@ -18,9 +18,7 @@ export const usePublicBoards = () => {
     fetch(`${baseUrl}/api/v1/boards`, { signal })
       .then((response) => {
         if (!response.ok) {
-          throw Error(
-            `Board fetching failed with status: ${response.statusText}`,
-          );
+          throw Error(`Board fetching failed with status: ${response.status}`);
         }
         return response.json();
       })
