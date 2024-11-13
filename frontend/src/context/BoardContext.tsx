@@ -93,8 +93,7 @@ export const BoardProvider = ({ children }: BoardProviderProps) => {
         setBoardName(data.name);
         setTasks((prevTasks) => {
           const taskIds = new Set();
-          const allTasks = [...data.tasks, ...prevTasks];
-          return allTasks.filter(({ id }) => {
+          return [...data.tasks, ...prevTasks].filter(({ id }) => {
             if (taskIds.has(id)) {
               return false;
             }
@@ -104,8 +103,7 @@ export const BoardProvider = ({ children }: BoardProviderProps) => {
         });
         setMessages((prevMessages) => {
           const messageIds = new Set();
-          const allMessages = [...data.chat_messages, ...prevMessages];
-          return allMessages.filter(({ id }) => {
+          return [...data.chat_messages, ...prevMessages].filter(({ id }) => {
             if (messageIds.has(id)) {
               return false;
             }
