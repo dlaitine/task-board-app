@@ -91,8 +91,28 @@ export const BoardProvider = ({ children }: BoardProviderProps) => {
       })
       .then((data) => {
         setBoardName(data.name);
-        setTasks((prevTasks) => [...data.tasks, ...prevTasks]);
-        setMessages((prevMessages) => [...data.chat_messages, ...prevMessages]);
+        setTasks((prevTasks) => {
+          const taskIds = new Set();
+          const allTasks = [...data.tasks, ...prevTasks];
+          return allTasks.filter(({ id }) => {
+            if (taskIds.has(id)) {
+              return false;
+            }
+            taskIds.add(id);
+            return true;
+          });
+        });
+        setMessages((prevMessages) => {
+          const messageIds = new Set();
+          const allMessages = [...data.chat_messages, ...prevMessages];
+          return allMessages.filter(({ id }) => {
+            if (messageIds.has(id)) {
+              return false;
+            }
+            messageIds.add(id);
+            return true;
+          });
+        });
       })
       .finally(() => {
         if (!controller.signal.aborted) {
