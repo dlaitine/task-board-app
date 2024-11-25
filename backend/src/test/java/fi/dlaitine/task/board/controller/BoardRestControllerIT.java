@@ -1,6 +1,5 @@
 package fi.dlaitine.task.board.controller;
 
-import fi.dlaitine.task.board.Application;
 import fi.dlaitine.task.board.dto.BoardResponseDto;
 import fi.dlaitine.task.board.dto.ChatMessageResponseDto;
 import fi.dlaitine.task.board.dto.CreateBoardDto;
@@ -37,10 +36,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = {Application.class})
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 class BoardRestControllerIT {
 
-    // Board test data
+    // BOARD TEST DATA
+
     private static UUID TEST_PUBLIC_BOARD_1_ID;
     private static final String TEST_PUBLIC_BOARD_1_NAME = "Public Board 1";
     private static final Boolean TEST_PUBLIC_BOARD_1_IS_PRIVATE = false;
@@ -54,7 +54,8 @@ class BoardRestControllerIT {
     private static final String TEST_PRIVATE_BOARD_1_NAME = "Private Board 1";
     private static final Boolean TEST_PRIVATE_BOARD_1_IS_PRIVATE = true;
 
-    // Task test data
+    // TASK TEST DATA
+
     private static final String TEST_TASK_1_TITLE = "Test Task Title 1";
     private static final String TEST_TASK_1_DESCRIPTION = "Test Task Description 1";
     private static final TaskEntity.Status TEST_TASK_1_STATUS = TaskEntity.Status.BACKLOG;
@@ -65,7 +66,8 @@ class BoardRestControllerIT {
     private static final TaskEntity.Status TEST_TASK_2_STATUS = TaskEntity.Status.IN_PROGRESS;
     private static final Integer TEST_TASK_2_POSITION = 1;
 
-    // Chat message test data
+    // CHAT MESSAGE TEST DATA
+
     private static final String TEST_CHAT_MESSAGE_1_USERNAME = "Test User 1";
     private static final String TEST_CHAT_MESSAGE_1_CONTENT = "Testing 1";
     private static final Long TEST_CHAT_MESSAGE_1_CREATED_AT = Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli();
@@ -87,7 +89,7 @@ class BoardRestControllerIT {
     private ChatMessageRepository chatMessageRepository;
 
     @BeforeEach
-    void init() {
+    void setup() {
         RestAssured.port = port;
         initBoardTestData();
     }
@@ -120,7 +122,6 @@ class BoardRestControllerIT {
                 () -> assertEquals(TEST_PUBLIC_BOARD_1_IS_PRIVATE, board1.getIsPrivate()),
                 () -> assertNull(board1.getTasks()),
                 () -> assertNull(board1.getChatMessages()));
-
 
         BoardResponseDto board2 = boardResponseDtos.get(1);
         assertAll("Board 2 assertions",
@@ -250,16 +251,17 @@ class BoardRestControllerIT {
     }
 
 
-    public void assertTask(String expectedTitle, String expectedDescription, String expectedStatus,
+    private void assertTask(String expectedTitle, String expectedDescription, String expectedStatus,
                            Integer expectedPosition, TaskResponseDto actualTask) {
         assertAll("Task 2 assertions",
+                () -> assertNotNull(actualTask.getId()),
                 () -> assertEquals(expectedTitle, actualTask.getTitle()),
                 () -> assertEquals(expectedDescription, actualTask.getDescription()),
                 () -> assertEquals(expectedStatus, actualTask.getStatus().name()),
                 () -> assertEquals(expectedPosition, actualTask.getPosition()));
     }
 
-    public void assertChatMessage(String expectedUsername, String expectedContent,
+    private void assertChatMessage(String expectedUsername, String expectedContent,
                                   Long expectedCreatedAt, ChatMessageResponseDto actualChatMessage) {
         assertAll("Chat message assertions",
                 () -> assertEquals(expectedUsername, actualChatMessage.getUsername()),

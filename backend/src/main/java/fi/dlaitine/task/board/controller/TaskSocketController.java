@@ -1,5 +1,6 @@
 package fi.dlaitine.task.board.controller;
 
+import fi.dlaitine.task.board.dto.SocketErrorDto;
 import fi.dlaitine.task.board.exception.BoardNotFoundException;
 import fi.dlaitine.task.board.dto.CreateTaskDto;
 import fi.dlaitine.task.board.dto.UpdateTaskDto;
@@ -28,18 +29,19 @@ public class TaskSocketController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskSocketController.class);
 
-    private final TaskService service;
+    private final TaskService taskService;
 
     @Autowired
-    public TaskSocketController(TaskService service) {
-        this.service = service;
+    public TaskSocketController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @MessageMapping("/{boardId}/new-task")
     @SendTo("/topic/{boardId}/new-task")
     public TaskResponseDto handleNewTask(@DestinationVariable UUID boardId,
-                                         @Valid CreateTaskDto newTask) {
-        return service.addTask(boardId, newTask);
+                                         @Valid CreateTaskDto newTask) throws BoardNotFoundException {
+        LOGGER.info("Received a request to create a new task to board '{}' with title '{}'", boardId, newTask.title());
+        return taskService.addTask(boardId, newTask);
     }
 
     @MessageMapping("/{boardId}/update-task/{taskId}")
@@ -47,46 +49,47 @@ public class TaskSocketController {
     public List<TaskResponseDto> handleUpdateTask(@DestinationVariable UUID boardId,
                                                   @DestinationVariable Integer taskId,
                                                   @Valid UpdateTaskDto updateTask) throws TaskNotFoundException {
-        return service.updateTask(boardId, taskId, updateTask);
+        LOGGER.info("Received an update request for task '{}' on board '{}'", taskId, boardId);
+        return taskService.updateTask(boardId, taskId, updateTask);
     }
 
     @MessageExceptionHandler
-    @SendToUser("/topic/error")
-    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    @SendToUser("/queue/error")
+    public SocketErrorDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         LOGGER.warn("Received request with invalid arguments: {}", e.getMessage(), e);
         BindingResult bindingResult = e.getBindingResult();
         if (bindingResult != null) {
-            return "Invalid values for following fields: " + bindingResult.getFieldErrors()
-                    .stream().map(FieldError::getField).toList();
+            return new SocketErrorDto("Invalid values for following fields: " + bindingResult.getFieldErrors()
+                    .stream().map(FieldError::getField).toList());
         }
-        return "Invalid request";
+        return new SocketErrorDto("Invalid request");
     }
 
     @MessageExceptionHandler
-    @SendToUser("/topic/error")
-    public String handleBoardNotFoundException(BoardNotFoundException e) {
-        LOGGER.warn("Error occurred during task update: {}", e.getMessage(), e);
-        return "Invalid board id";
-    }
-
-    @MessageExceptionHandler
-    @SendToUser("/topic/error")
-    public String handleTaskNotFoundException(TaskNotFoundException e) {
-        LOGGER.warn("Error occurred during task update: {}", e.getMessage(), e);
-        return "Invalid task id";
-    }
-
-    @MessageExceptionHandler
-    @SendToUser("/topic/error")
-    public String handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        LOGGER.warn("Error occurred during task saving: {}", e.getMessage(), e);
-        return "Invalid data";
-    }
-
-    @MessageExceptionHandler
-    @SendToUser("/topic/error")
-    public String handleException(Exception e) {
+    @SendToUser("/queue/error")
+    public SocketErrorDto handleBoardNotFoundException(BoardNotFoundException e) {
         LOGGER.warn("Error occurred during task processing: {}", e.getMessage(), e);
-        return "Internal error";
+        return new SocketErrorDto("Board not found");
+    }
+
+    @MessageExceptionHandler
+    @SendToUser("/queue/error")
+    public SocketErrorDto handleTaskNotFoundException(TaskNotFoundException e) {
+        LOGGER.warn("Error occurred during task update: {}", e.getMessage(), e);
+        return new SocketErrorDto("Task not found");
+    }
+
+    @MessageExceptionHandler
+    @SendToUser("/queue/error")
+    public SocketErrorDto handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        LOGGER.warn("Error occurred during task saving: {}", e.getMessage(), e);
+        return new SocketErrorDto("Invalid data");
+    }
+
+    @MessageExceptionHandler
+    @SendToUser("/queue/error")
+    public SocketErrorDto handleException(Exception e) {
+        LOGGER.warn("Error occurred during task processing: {}", e.getMessage(), e);
+        return new SocketErrorDto("Internal error");
     }
 }

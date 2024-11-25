@@ -1,11 +1,13 @@
 package fi.dlaitine.task.board.service;
 
 import fi.dlaitine.task.board.dto.TaskResponseDto;
+import fi.dlaitine.task.board.exception.BoardNotFoundException;
 import fi.dlaitine.task.board.exception.TaskNotFoundException;
 import fi.dlaitine.task.board.dto.CreateTaskDto;
 import fi.dlaitine.task.board.dto.UpdateTaskDto;
 import fi.dlaitine.task.board.entity.TaskEntity;
 import fi.dlaitine.task.board.mapper.TaskMapper;
+import fi.dlaitine.task.board.repository.BoardRepository;
 import fi.dlaitine.task.board.repository.TaskRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,24 +25,32 @@ public class TaskService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
 
-    private final TaskRepository repository;
+    private final BoardRepository boardRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
-    public TaskService(TaskRepository repository) {
-        this.repository = repository;
+    public TaskService(BoardRepository boardRepository,
+                       TaskRepository taskRepository) {
+        this.boardRepository = boardRepository;
+        this.taskRepository = taskRepository;
     }
 
-    public TaskResponseDto addTask(UUID boardId, CreateTaskDto task) {
+    public TaskResponseDto addTask(UUID boardId, CreateTaskDto task) throws BoardNotFoundException {
+        if (!boardRepository.existsById(boardId)) {
+            LOGGER.warn("Board '{}' not found", boardId);
+            throw new BoardNotFoundException(String.format("Board '%s' not found.", boardId));
+        }
+
         TaskEntity taskEntity = TaskMapper.toTaskEntity(task);
         taskEntity.setBoardId(boardId);
         // Add new tasks to backlog
         taskEntity.setStatus(TaskEntity.Status.BACKLOG);
         // Add new tasks to the end of status group
-        taskEntity.setPosition(repository.findMaxPositionForStatusGroup(taskEntity.getStatus()) + 1);
+        taskEntity.setPosition(taskRepository.findMaxPositionForStatusGroup(taskEntity.getStatus()) + 1);
 
         try {
-            taskEntity = repository.save(taskEntity);
-        } catch (DataIntegrityViolationException e) {
+            taskEntity = taskRepository.save(taskEntity);
+        } catch (DataAccessException e) {
             LOGGER.warn("Exception was thrown when saving new task {} to database: {}", task, e.getMessage(), e);
             throw e;
         }
@@ -50,10 +60,11 @@ public class TaskService {
 
     @Transactional
     public List<TaskResponseDto> updateTask(UUID boardId, Integer taskId, UpdateTaskDto updateTask) throws TaskNotFoundException {
-        Optional<TaskEntity> optionalTask = repository.findByBoardIdAndId(boardId, taskId);
+        Optional<TaskEntity> optionalTask = taskRepository.findByBoardIdAndId(boardId, taskId);
 
         if (optionalTask.isEmpty()) {
-            throw new TaskNotFoundException("Task for board " + boardId + " with id " + taskId + " not found.");
+            LOGGER.warn("Task {} for board {} not found.", taskId, boardId);
+            throw new TaskNotFoundException(String.format("Task '%s' for board '%s' not found.", taskId, boardId));
         }
 
         TaskEntity originalTask = optionalTask.get();
@@ -104,7 +115,7 @@ public class TaskService {
             int startPosition = originPosition < destinationPosition ? originPosition + 1 : destinationPosition;
             int endPosition = destinationPosition > originPosition ? destinationPosition : originPosition - 1;
 
-            List<TaskEntity> tasks = repository.findByStatusEqualsAndPositionBetween(originStatus, startPosition, endPosition);
+            List<TaskEntity> tasks = taskRepository.findByStatusEqualsAndPositionBetween(originStatus, startPosition, endPosition);
             tasks.forEach(task -> {
                 if (task.getPosition() > originPosition && task.getPosition() <= destinationPosition) {
                     task.setPosition(task.getPosition() - 1);
@@ -115,11 +126,11 @@ public class TaskService {
             });
             return tasks;
         } else {
-            List<TaskEntity> originTasks = repository.findByStatusEqualsAndPositionGreaterThan(originStatus, originPosition);
+            List<TaskEntity> originTasks = taskRepository.findByStatusEqualsAndPositionGreaterThan(originStatus, originPosition);
             originTasks.forEach(task -> task.setPosition(task.getPosition() - 1));
             List<TaskEntity> combinedTasks = new ArrayList<>(originTasks);
 
-            List<TaskEntity> destinationTasks = repository.findByStatusEqualsAndPositionGreaterThanEqual(destinationStatus, destinationPosition);
+            List<TaskEntity> destinationTasks = taskRepository.findByStatusEqualsAndPositionGreaterThanEqual(destinationStatus, destinationPosition);
             destinationTasks.forEach(task -> task.setPosition(task.getPosition() + 1));
             combinedTasks.addAll(destinationTasks);
 

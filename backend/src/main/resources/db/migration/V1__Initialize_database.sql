@@ -17,7 +17,7 @@ CREATE TABLE task (
 CREATE TABLE chat_message (
     board_id VARCHAR(36) NOT NULL,
     id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(50) NOT NULL,
     content TEXT,
     created_at BIGINT NOT NULL,
     FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE

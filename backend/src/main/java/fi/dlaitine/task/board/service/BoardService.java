@@ -14,7 +14,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +40,7 @@ public class BoardService {
         Optional<BoardEntity> optionalBoard = boardRepository.findById(boardId);
 
         if (optionalBoard.isEmpty()) {
-            throw new BoardNotFoundException("Board with id " + boardId + " not found.");
+            throw new BoardNotFoundException(String.format("Board '%s' not found.", boardId));
         }
 
         BoardEntity boardEntity = optionalBoard.get();
@@ -63,11 +63,15 @@ public class BoardService {
 
         try {
             boardEntity = boardRepository.save(boardEntity);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataAccessException e) {
             LOGGER.warn("Exception was thrown when saving new board {} to database: {}", board, e.getMessage(), e);
             throw e;
         }
 
         return BoardMapper.toBoardResponseDto(boardEntity);
+    }
+
+    public boolean boardExists(UUID boardId) {
+        return boardRepository.existsById(boardId);
     }
 }

@@ -2,6 +2,8 @@ package fi.dlaitine.task.board.controller;
 
 import fi.dlaitine.task.board.dto.ChatMessageResponseDto;
 import fi.dlaitine.task.board.dto.CreateChatMessageDto;
+import fi.dlaitine.task.board.dto.SocketErrorDto;
+import fi.dlaitine.task.board.exception.BoardNotFoundException;
 import fi.dlaitine.task.board.service.ChatService;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -23,36 +25,43 @@ public class ChatSocketController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatSocketController.class);
 
-    private final ChatService service;
+    private final ChatService chatService;
 
     @Autowired
-    public ChatSocketController(ChatService service) {
-        this.service = service;
+    public ChatSocketController(ChatService chatService) {
+        this.chatService = chatService;
     }
 
     @MessageMapping("/{boardId}/new-chat-message")
     @SendTo("/topic/{boardId}/new-chat-message")
     public ChatMessageResponseDto handleNewMessage(@DestinationVariable UUID boardId,
-                                                   @Valid CreateChatMessageDto newMessage) {
-        return service.addChatMessage(boardId, newMessage);
+                                                   @Valid CreateChatMessageDto newMessage) throws BoardNotFoundException {
+        return chatService.addChatMessage(boardId, newMessage);
     }
 
     @MessageExceptionHandler
-    @SendToUser("/topic/error")
-    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    @SendToUser("/queue/error")
+    public SocketErrorDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         LOGGER.warn("Received request with invalid arguments: {}", e.getMessage(), e);
         BindingResult bindingResult = e.getBindingResult();
         if (bindingResult != null) {
-            return "Invalid values for following fields: " + bindingResult.getFieldErrors()
-                    .stream().map(FieldError::getField).toList();
+            return new SocketErrorDto("Invalid values for following fields: " + bindingResult.getFieldErrors()
+                    .stream().map(FieldError::getField).toList());
         }
-        return "Invalid request";
+        return new SocketErrorDto("Invalid request");
     }
 
     @MessageExceptionHandler
-    @SendToUser("/topic/error")
-    public String handleException(Exception e) {
+    @SendToUser("/queue/error")
+    public SocketErrorDto handleBoardNotFoundException(BoardNotFoundException e) {
         LOGGER.warn("Error occurred during chat message processing: {}", e.getMessage(), e);
-        return "Internal error";
+        return new SocketErrorDto("Board not found");
+    }
+
+    @MessageExceptionHandler
+    @SendToUser("/queue/error")
+    public SocketErrorDto handleException(Exception e) {
+        LOGGER.warn("Error occurred during chat message processing: {}", e.getMessage(), e);
+        return new SocketErrorDto("Internal error");
     }
 }
