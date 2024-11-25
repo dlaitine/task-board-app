@@ -8,29 +8,25 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static fi.dlaitine.task.board.TestData.TEST_CHAT_MESSAGE_1_CONTENT;
+import static fi.dlaitine.task.board.TestData.TEST_CHAT_USERNAME_1;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ChatSocketControllerIT extends SocketControllerITBase {
+class ChatMessageSocketControllerIT extends SocketControllerITBase {
 
     // CHAT SOCKET PATHS
 
     private static final String NEW_CHAT_MESSAGE_CREATE_PATH = WEBSOCKET_APP + "/%s/new-chat-message";
     private static final String NEW_CHAT_MESSAGE_LISTEN_PATH = WEBSOCKET_TOPIC + "/%s/new-chat-message";
 
-    // TEST DATA
-
-    private static final String TEST_USER_NAME = "Test User";
-
-    private static final String TEST_MESSAGE_1_CONTENT = "Hello";
-
     // NEW CHAT MESSAGE TESTS
 
     @Test
     @DisplayName("Test sending chat message, should be sent to listening clients")
-    void test_whenCreateChatMessage_then_clientsShouldReceiveMessage() throws Exception {
+    void test_when_createChatMessage_then_clientsShouldReceiveMessage() throws Exception {
         long start = ZonedDateTime.now().toInstant().toEpochMilli();
         initializeTestBoard();
 
@@ -43,7 +39,7 @@ class ChatSocketControllerIT extends SocketControllerITBase {
 
         long end = ZonedDateTime.now().toInstant().toEpochMilli();
 
-        assertChatMessage(TEST_USER_NAME, TEST_MESSAGE_1_CONTENT, chatMessage);
+        assertChatMessage(TEST_CHAT_USERNAME_1, TEST_CHAT_MESSAGE_1_CONTENT, chatMessage);
         assertNotNull(chatMessage.getCreatedAt());
         assertTrue(isEpochBetween(start, end, chatMessage.getCreatedAt()));
 
@@ -52,7 +48,7 @@ class ChatSocketControllerIT extends SocketControllerITBase {
 
     @Test
     @DisplayName("Test sending chat message with invalid board ID, should return an error")
-    void test_whenCreateChatMessage_with_invalidBoardId_then_clientsShouldReceiveMessage() throws Exception {
+    void test_when_createChatMessage_with_invalidBoardId_then_clientsShouldReceiveMessage() throws Exception {
         initializeTestBoard();
 
         TestStompFrameHandler<SocketErrorDto> stompHandler = new TestStompFrameHandler<>(SocketErrorDto.class);
@@ -68,11 +64,11 @@ class ChatSocketControllerIT extends SocketControllerITBase {
 
     @Test
     @DisplayName("Test sending chat message with empty username, should return an error")
-    void test_whenCreateChatMessage_with_emptyUsername_then_clientsShouldReceiveMessage() throws Exception {
+    void test_when_createChatMessage_with_emptyUsername_then_clientsShouldReceiveMessage() throws Exception {
         TestStompFrameHandler<SocketErrorDto> stompHandler = new TestStompFrameHandler<>(SocketErrorDto.class);
         stompSession.subscribe(ERROR_LISTEN_PATH, stompHandler);
 
-        CreateChatMessageDto chatMessage = new CreateChatMessageDto("", TEST_MESSAGE_1_CONTENT);
+        CreateChatMessageDto chatMessage = new CreateChatMessageDto("", TEST_CHAT_MESSAGE_1_CONTENT);
         stompSession.send(getNewChatMessageCreatePath(UUID.randomUUID()), chatMessage);
 
         String errorMessage = stompHandler.poll(2).errorMsg();
@@ -83,12 +79,12 @@ class ChatSocketControllerIT extends SocketControllerITBase {
 
     @Test
     @DisplayName("Test sending chat message with too long username, should return an error")
-    void test_whenCreateChatMessage_with_tooLongUsername_then_clientsShouldReceiveMessage() throws Exception {
+    void test_when_createChatMessage_with_tooLongUsername_then_clientsShouldReceiveMessage() throws Exception {
         TestStompFrameHandler<SocketErrorDto> stompHandler = new TestStompFrameHandler<>(SocketErrorDto.class);
         stompSession.subscribe(ERROR_LISTEN_PATH, stompHandler);
 
         String tooLongUsername = StringUtils.repeat("a", 51);
-        CreateChatMessageDto chatMessage = new CreateChatMessageDto(tooLongUsername, TEST_MESSAGE_1_CONTENT);
+        CreateChatMessageDto chatMessage = new CreateChatMessageDto(tooLongUsername, TEST_CHAT_MESSAGE_1_CONTENT);
         stompSession.send(getNewChatMessageCreatePath(UUID.randomUUID()), chatMessage);
 
         String errorMessage = stompHandler.poll(2).errorMsg();
@@ -99,11 +95,11 @@ class ChatSocketControllerIT extends SocketControllerITBase {
 
     @Test
     @DisplayName("Test sending chat message with empty content, should return an error")
-    void test_whenCreateChatMessage_with_emptyContent_then_clientsShouldReceiveMessage() throws Exception {
+    void test_when_createChatMessage_with_emptyContent_then_clientsShouldReceiveMessage() throws Exception {
         TestStompFrameHandler<SocketErrorDto> stompHandler = new TestStompFrameHandler<>(SocketErrorDto.class);
         stompSession.subscribe(ERROR_LISTEN_PATH, stompHandler);
 
-        CreateChatMessageDto chatMessage = new CreateChatMessageDto(TEST_USER_NAME, "");
+        CreateChatMessageDto chatMessage = new CreateChatMessageDto(TEST_CHAT_USERNAME_1, "");
         stompSession.send(getNewChatMessageCreatePath(UUID.randomUUID()), chatMessage);
 
         String errorMessage = stompHandler.poll(2).errorMsg();
@@ -113,7 +109,7 @@ class ChatSocketControllerIT extends SocketControllerITBase {
     }
 
     private CreateChatMessageDto getCreateChatMessage1Dto() {
-        return new CreateChatMessageDto(TEST_USER_NAME, TEST_MESSAGE_1_CONTENT);
+        return new CreateChatMessageDto(TEST_CHAT_USERNAME_1, TEST_CHAT_MESSAGE_1_CONTENT);
     }
 
     private void assertChatMessage(String expectedUsername, String expectedContent,

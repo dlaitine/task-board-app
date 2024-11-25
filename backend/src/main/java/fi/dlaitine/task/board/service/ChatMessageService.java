@@ -15,15 +15,15 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ChatService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
+public class ChatMessageService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatMessageService.class);
 
     private final ChatMessageRepository messageRepository;
 
     private final BoardService boardService;
 
     @Autowired
-    public ChatService(ChatMessageRepository messageRepository, BoardService boardService) {
+    public ChatMessageService(ChatMessageRepository messageRepository, BoardService boardService) {
         this.messageRepository = messageRepository;
         this.boardService = boardService;
     }

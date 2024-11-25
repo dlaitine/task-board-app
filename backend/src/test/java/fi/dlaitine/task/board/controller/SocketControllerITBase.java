@@ -19,6 +19,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
+import static fi.dlaitine.task.board.TestData.getTestPublicBoard1;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -75,13 +76,7 @@ abstract class SocketControllerITBase {
     }
 
     protected void initializeTestBoard() {
-        BoardEntity board = BoardEntity.builder()
-                .name("Test Board")
-                .isPrivate(false)
-                .build();
-
-        board = boardRepository.save(board);
+        BoardEntity board = boardRepository.save(getTestPublicBoard1());
         testBoardId = board.getId();
     }
-
 }

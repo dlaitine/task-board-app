@@ -13,8 +13,6 @@ import fi.dlaitine.task.board.repository.TaskRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +26,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import static fi.dlaitine.task.board.TestData.TEST_CHAT_MESSAGE_1_CONTENT;
+import static fi.dlaitine.task.board.TestData.TEST_CHAT_MESSAGE_1_CREATED_AT;
+import static fi.dlaitine.task.board.TestData.TEST_CHAT_USERNAME_1;
+import static fi.dlaitine.task.board.TestData.TEST_CHAT_MESSAGE_2_CONTENT;
+import static fi.dlaitine.task.board.TestData.TEST_CHAT_MESSAGE_2_CREATED_AT;
+import static fi.dlaitine.task.board.TestData.TEST_CHAT_USERNAME_2;
+import static fi.dlaitine.task.board.TestData.TEST_PRIVATE_BOARD_1_IS_PRIVATE;
+import static fi.dlaitine.task.board.TestData.TEST_PRIVATE_BOARD_1_NAME;
+import static fi.dlaitine.task.board.TestData.TEST_PUBLIC_BOARD_1_IS_PRIVATE;
+import static fi.dlaitine.task.board.TestData.TEST_PUBLIC_BOARD_1_NAME;
+import static fi.dlaitine.task.board.TestData.TEST_PUBLIC_BOARD_2_IS_PRIVATE;
+import static fi.dlaitine.task.board.TestData.TEST_PUBLIC_BOARD_2_NAME;
+import static fi.dlaitine.task.board.TestData.TEST_TASK_1_DESCRIPTION;
+import static fi.dlaitine.task.board.TestData.TEST_TASK_1_POSITION;
+import static fi.dlaitine.task.board.TestData.TEST_TASK_1_STATUS;
+import static fi.dlaitine.task.board.TestData.TEST_TASK_1_TITLE;
+import static fi.dlaitine.task.board.TestData.TEST_TASK_2_DESCRIPTION;
+import static fi.dlaitine.task.board.TestData.TEST_TASK_2_POSITION;
+import static fi.dlaitine.task.board.TestData.TEST_TASK_2_STATUS;
+import static fi.dlaitine.task.board.TestData.TEST_TASK_2_TITLE;
+import static fi.dlaitine.task.board.TestData.getTestChatMessage1;
+import static fi.dlaitine.task.board.TestData.getTestChatMessage2;
+import static fi.dlaitine.task.board.TestData.getTestPrivateBoard1;
+import static fi.dlaitine.task.board.TestData.getTestPublicBoard1;
+import static fi.dlaitine.task.board.TestData.getTestPublicBoard2;
+import static fi.dlaitine.task.board.TestData.getTestTask1;
+import static fi.dlaitine.task.board.TestData.getTestTask2;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,42 +64,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class BoardRestControllerIT {
 
-    // BOARD TEST DATA
-
-    private static UUID TEST_PUBLIC_BOARD_1_ID;
-    private static final String TEST_PUBLIC_BOARD_1_NAME = "Public Board 1";
-    private static final Boolean TEST_PUBLIC_BOARD_1_IS_PRIVATE = false;
-
-    private static UUID TEST_PUBLIC_BOARD_2_ID;
-    private static final String TEST_PUBLIC_BOARD_2_NAME = "Public Board 2";
-    private static final Boolean TEST_PUBLIC_BOARD_2_IS_PRIVATE = false;
-
-
-    private static UUID TEST_PRIVATE_BOARD_1_ID;
-    private static final String TEST_PRIVATE_BOARD_1_NAME = "Private Board 1";
-    private static final Boolean TEST_PRIVATE_BOARD_1_IS_PRIVATE = true;
-
-    // TASK TEST DATA
-
-    private static final String TEST_TASK_1_TITLE = "Test Task Title 1";
-    private static final String TEST_TASK_1_DESCRIPTION = "Test Task Description 1";
-    private static final TaskEntity.Status TEST_TASK_1_STATUS = TaskEntity.Status.BACKLOG;
-    private static final Integer TEST_TASK_1_POSITION = 0;
-
-    private static final String TEST_TASK_2_TITLE = "Test Task Title 2";
-    private static final String TEST_TASK_2_DESCRIPTION = "Test Task Description 2";
-    private static final TaskEntity.Status TEST_TASK_2_STATUS = TaskEntity.Status.IN_PROGRESS;
-    private static final Integer TEST_TASK_2_POSITION = 1;
-
-    // CHAT MESSAGE TEST DATA
-
-    private static final String TEST_CHAT_MESSAGE_1_USERNAME = "Test User 1";
-    private static final String TEST_CHAT_MESSAGE_1_CONTENT = "Testing 1";
-    private static final Long TEST_CHAT_MESSAGE_1_CREATED_AT = Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli();
-
-    private static final String TEST_CHAT_MESSAGE_2_USERNAME = "Test User 2";
-    private static final String TEST_CHAT_MESSAGE_2_CONTENT = "Testing 2";
-    private static final Long TEST_CHAT_MESSAGE_2_CREATED_AT = Instant.now().toEpochMilli();
+    private UUID testPublicBoard1Id;
 
     @LocalServerPort
     int port;
@@ -134,7 +124,7 @@ class BoardRestControllerIT {
     @Test
     @DisplayName("Test fetching public board without tasks and chat messages, should return ok")
     void test_whenGetPublicBoard_withoutTasksAndMessages_shouldReturnOk() {
-        BoardResponseDto boardResponseDto = internalGetBoard(TEST_PUBLIC_BOARD_1_ID, false, false);
+        BoardResponseDto boardResponseDto = internalGetBoard(testPublicBoard1Id, false, false);
 
         assertAll("Board assertions",
                 () -> assertEquals(TEST_PUBLIC_BOARD_1_NAME, boardResponseDto.getName()),
@@ -146,7 +136,7 @@ class BoardRestControllerIT {
     @Test
     @DisplayName("Test fetching public board with tasks and chat messages, should return ok")
     void test_whenGetPublicBoard_withTasksAndMessages_shouldReturnOk() {
-        BoardResponseDto boardResponseDto = internalGetBoard(TEST_PUBLIC_BOARD_1_ID, true, true);
+        BoardResponseDto boardResponseDto = internalGetBoard(testPublicBoard1Id, true, true);
 
         assertAll("Board assertions",
                 () -> assertEquals(TEST_PUBLIC_BOARD_1_NAME, boardResponseDto.getName()),
@@ -167,18 +157,18 @@ class BoardRestControllerIT {
         assertEquals(2, boardResponseDto.getChatMessages().size());
 
         ChatMessageResponseDto chatMessage1 = boardResponseDto.getChatMessages().get(0);
-        assertChatMessage(TEST_CHAT_MESSAGE_1_USERNAME, TEST_CHAT_MESSAGE_1_CONTENT,
+        assertChatMessage(TEST_CHAT_USERNAME_1, TEST_CHAT_MESSAGE_1_CONTENT,
                 TEST_CHAT_MESSAGE_1_CREATED_AT, chatMessage1);
 
         ChatMessageResponseDto chatMessage2 = boardResponseDto.getChatMessages().get(1);
-        assertChatMessage(TEST_CHAT_MESSAGE_2_USERNAME, TEST_CHAT_MESSAGE_2_CONTENT,
+        assertChatMessage(TEST_CHAT_USERNAME_2, TEST_CHAT_MESSAGE_2_CONTENT,
                 TEST_CHAT_MESSAGE_2_CREATED_AT, chatMessage2);
     }
 
     @Test
     @DisplayName("Test fetching public board with tasks and without chat messages, should return ok")
     void test_whenGetPublicBoard_withTasksAndWithoutMessages_shouldReturnOk() {
-        BoardResponseDto boardResponseDto = internalGetBoard(TEST_PUBLIC_BOARD_1_ID, true, false);
+        BoardResponseDto boardResponseDto = internalGetBoard(testPublicBoard1Id, true, false);
 
         assertAll("Board assertions",
                 () -> assertEquals(TEST_PUBLIC_BOARD_1_NAME, boardResponseDto.getName()),
@@ -191,7 +181,7 @@ class BoardRestControllerIT {
     @Test
     @DisplayName("Test fetching public board without tasks and with chat messages, should return ok")
     void test_whenGetPublicBoard_withoutTasksAndWithMessages_shouldReturnOk() {
-        BoardResponseDto boardResponseDto = internalGetBoard(TEST_PUBLIC_BOARD_1_ID, false, true);
+        BoardResponseDto boardResponseDto = internalGetBoard(testPublicBoard1Id, false, true);
 
         assertAll("Board assertions",
                 () -> assertEquals(TEST_PUBLIC_BOARD_1_NAME, boardResponseDto.getName()),
@@ -318,42 +308,32 @@ class BoardRestControllerIT {
     private void initBoardTestData() {
         // Board 1 test data initialization
 
-        BoardEntity publicBoard1 = BoardEntity.builder()
-                .name(TEST_PUBLIC_BOARD_1_NAME)
-                .isPrivate(TEST_PUBLIC_BOARD_1_IS_PRIVATE)
-                .build();
+        BoardEntity publicBoard1 = getTestPublicBoard1();
         publicBoard1 = boardRepository.save(publicBoard1);
-        TEST_PUBLIC_BOARD_1_ID = publicBoard1.getId();
+        testPublicBoard1Id = publicBoard1.getId();
 
-        TaskEntity board1Task1 = getTestTask1(TEST_PUBLIC_BOARD_1_ID);
-        TaskEntity board1Task2 = getTestTask2(TEST_PUBLIC_BOARD_1_ID);
+        TaskEntity board1Task1 = getTestTask1(testPublicBoard1Id);
+        TaskEntity board1Task2 = getTestTask2(testPublicBoard1Id);
         taskRepository.saveAll(List.of(board1Task1, board1Task2));
 
-        ChatMessageEntity board1Chat1 = getTestChatMessage1(TEST_PUBLIC_BOARD_1_ID);
-        ChatMessageEntity board1Chat2 = getTestChatMessage2(TEST_PUBLIC_BOARD_1_ID);
+        ChatMessageEntity board1Chat1 = getTestChatMessage1(testPublicBoard1Id);
+        ChatMessageEntity board1Chat2 = getTestChatMessage2(testPublicBoard1Id);
         chatMessageRepository.saveAll(List.of(board1Chat1, board1Chat2));
 
         // Board 2 test data initialization
 
-        BoardEntity publicBoard2 = BoardEntity.builder()
-                .name(TEST_PUBLIC_BOARD_2_NAME)
-                .isPrivate(TEST_PUBLIC_BOARD_2_IS_PRIVATE)
-                .build();
+        BoardEntity publicBoard2 = getTestPublicBoard2();
         publicBoard2 = boardRepository.save(publicBoard2);
-        TEST_PUBLIC_BOARD_2_ID = publicBoard2.getId();
+        UUID TEST_PUBLIC_BOARD_2_ID = publicBoard2.getId();
 
         TaskEntity board2Task1 = getTestTask1(TEST_PUBLIC_BOARD_2_ID);
         taskRepository.save(board2Task1);
 
         // Board 3 test data initialization
 
-        BoardEntity privateBoard1 = BoardEntity.builder()
-                .name(TEST_PRIVATE_BOARD_1_NAME)
-                .isPrivate(TEST_PRIVATE_BOARD_1_IS_PRIVATE)
-                .build();
-
+        BoardEntity privateBoard1 = getTestPrivateBoard1();
         privateBoard1 = boardRepository.save(privateBoard1);
-        TEST_PRIVATE_BOARD_1_ID = privateBoard1.getId();
+        UUID TEST_PRIVATE_BOARD_1_ID = privateBoard1.getId();
 
         TaskEntity board3Task1 = getTestTask2(TEST_PRIVATE_BOARD_1_ID);
         taskRepository.save(board3Task1);
@@ -362,44 +342,6 @@ class BoardRestControllerIT {
         chatMessageRepository.save(board3Chat1);
 
         assertEquals(3, boardRepository.count());
-    }
-
-    private TaskEntity getTestTask1(UUID boardId) {
-        return TaskEntity.builder()
-                .boardId(boardId)
-                .title(TEST_TASK_1_TITLE)
-                .description(TEST_TASK_1_DESCRIPTION)
-                .status(TEST_TASK_1_STATUS)
-                .position(TEST_TASK_1_POSITION)
-                .build();
-    }
-
-    private TaskEntity getTestTask2(UUID boardId) {
-        return TaskEntity.builder()
-                .boardId(boardId)
-                .title(TEST_TASK_2_TITLE)
-                .description(TEST_TASK_2_DESCRIPTION)
-                .status(TEST_TASK_2_STATUS)
-                .position(TEST_TASK_2_POSITION)
-                .build();
-    }
-
-    private ChatMessageEntity getTestChatMessage1(UUID boardId) {
-        return ChatMessageEntity.builder()
-                .boardId(boardId)
-                .username(TEST_CHAT_MESSAGE_1_USERNAME)
-                .content(TEST_CHAT_MESSAGE_1_CONTENT)
-                .createdAt(TEST_CHAT_MESSAGE_1_CREATED_AT)
-                .build();
-    }
-
-    private ChatMessageEntity getTestChatMessage2(UUID boardId) {
-        return ChatMessageEntity.builder()
-                .boardId(boardId)
-                .username(TEST_CHAT_MESSAGE_2_USERNAME)
-                .content(TEST_CHAT_MESSAGE_2_CONTENT)
-                .createdAt(TEST_CHAT_MESSAGE_2_CREATED_AT)
-                .build();
     }
 
 }

@@ -4,7 +4,7 @@ import fi.dlaitine.task.board.dto.ChatMessageResponseDto;
 import fi.dlaitine.task.board.dto.CreateChatMessageDto;
 import fi.dlaitine.task.board.dto.SocketErrorDto;
 import fi.dlaitine.task.board.exception.BoardNotFoundException;
-import fi.dlaitine.task.board.service.ChatService;
+import fi.dlaitine.task.board.service.ChatMessageService;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -21,22 +21,22 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 @Controller
-public class ChatSocketController {
+public class ChatMessageSocketController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatSocketController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatMessageSocketController.class);
 
-    private final ChatService chatService;
+    private final ChatMessageService chatMessageService;
 
     @Autowired
-    public ChatSocketController(ChatService chatService) {
-        this.chatService = chatService;
+    public ChatMessageSocketController(ChatMessageService chatMessageService) {
+        this.chatMessageService = chatMessageService;
     }
 
     @MessageMapping("/{boardId}/new-chat-message")
     @SendTo("/topic/{boardId}/new-chat-message")
     public ChatMessageResponseDto handleNewMessage(@DestinationVariable UUID boardId,
                                                    @Valid CreateChatMessageDto newMessage) throws BoardNotFoundException {
-        return chatService.addChatMessage(boardId, newMessage);
+        return chatMessageService.addChatMessage(boardId, newMessage);
     }
 
     @MessageExceptionHandler

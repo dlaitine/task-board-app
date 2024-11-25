@@ -30,7 +30,7 @@ class BoardRestControllerTest {
 
     @Test
     @DisplayName("Test fetching public boards when service throws an exception, should return internal server error")
-    void test_whenGetPublicBoards_andServiceThrowsRuntimeException_shouldReturnInternalError() throws Exception {
+    void test_when_getPublicBoards_andServiceThrowsRuntimeException_shouldReturnInternalError() throws Exception {
         when(boardService.getPublicBoards()).thenThrow(new RuntimeException("Error"));
 
         mockMvc.perform(get("/api/v1/boards"))
@@ -39,7 +39,7 @@ class BoardRestControllerTest {
 
     @Test
     @DisplayName("Test fetching board when service throws an exception, should return internal server error")
-    void test_whenGetBoard_andServiceThrowsRuntimeException_shouldReturnInternalError() throws Exception {
+    void test_when_getBoard_andServiceThrowsRuntimeException_shouldReturnInternalError() throws Exception {
         UUID testBoardId = UUID.randomUUID();
         when(boardService.getBoard(testBoardId, false, false)).thenThrow(new RuntimeException("Error"));
 
@@ -49,7 +49,7 @@ class BoardRestControllerTest {
 
     @Test
     @DisplayName("Test creating a new board when service throws an exception, should return internal server error")
-    void test_whenCreateNewBoard_andServiceThrowsRuntimeException_shouldReturnInternalError() throws Exception {
+    void test_when_createNewBoard_andServiceThrowsRuntimeException_shouldReturnInternalError() throws Exception {
         CreateBoardDto newBoard = new CreateBoardDto("Test Board", false);
 
         when(boardService.createBoard(newBoard)).thenThrow(new RuntimeException("Error"));
