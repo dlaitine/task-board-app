@@ -18,6 +18,21 @@ export const statuses: Task['status'][] = [
 
 export type TasksByStatus = Record<Task['status'], Task[]>;
 
+const sortByPosition = (a: number | undefined, b: number | undefined) => {
+  if (a === b) {
+    return 0;
+  }
+
+  if (a === undefined) {
+    return 1;
+  }
+  if (b === undefined) {
+    return -1;
+  }
+
+  return a < b ? -1 : 1;
+};
+
 export const getTasksByStatus = (unorderedTasks: Task[]) => {
   const tasksByStatus: TasksByStatus = unorderedTasks.reduce(
     (acc, task) => {
@@ -29,21 +44,6 @@ export const getTasksByStatus = (unorderedTasks: Task[]) => {
       {} as TasksByStatus,
     ),
   );
-
-  const sortByPosition = (a: number | undefined, b: number | undefined) => {
-    if (a === b) {
-      return 0;
-    }
-
-    if (a === undefined) {
-      return 1;
-    }
-    if (b === undefined) {
-      return -1;
-    }
-
-    return a < b ? -1 : 1;
-  };
 
   statuses.forEach((status) => {
     tasksByStatus[status] = tasksByStatus[status].sort(

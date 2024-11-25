@@ -54,6 +54,15 @@ export const TaskForm = ({
     setTitleError('');
     setSubmitIsClicked(false);
 
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setTitle(defaultTitle);
+    setDescription(defaultDescription);
+    setTitleError('');
+    setSubmitIsClicked(false);
+
     onClose();
   };
 
@@ -94,7 +103,7 @@ export const TaskForm = ({
           >
             Save
           </Button>
-          <Button onClick={onClose} color="secondary">
+          <Button onClick={handleClose} color="secondary">
             Cancel
           </Button>
         </DialogActions>

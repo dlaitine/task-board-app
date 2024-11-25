@@ -19,8 +19,7 @@ export const TaskListContent = () => {
     if (!isEqual(newTasksByStatus, tasksByStatus)) {
       setTasksByStatus(newTasksByStatus);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tasks]);
+  }, [tasks, tasksByStatus]);
 
   const updateTaskStatusLocal = (
     sourceTask: Task,

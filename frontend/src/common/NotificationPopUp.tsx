@@ -1,19 +1,11 @@
 import { Alert, Snackbar } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { NotificationContext } from '../context/NotificationContext';
-import { useSubscription } from 'react-stomp-hooks';
 
 export const ErrorPopUp = () => {
   const [showError, setShowError] = useState(false);
 
-  const { message, setMessage, severity, setSeverity } =
-    useContext(NotificationContext);
-
-  // Subscribe to STOMP errors
-  useSubscription('/user/topic/error', (error) => {
-    setMessage(error.body);
-    setSeverity('error');
-  });
+  const { message, setMessage, severity } = useContext(NotificationContext);
 
   useEffect(() => {
     if (message !== '') {

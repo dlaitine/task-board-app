@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import { useSubscription } from 'react-stomp-hooks';
 
 interface NotificationContextProps {
   message: string;
@@ -21,6 +22,13 @@ export const NotificationProvider = ({
 }) => {
   const [message, setMessage] = useState<string>('');
   const [severity, setSeverity] = useState<'success' | 'error'>('success');
+
+  // Subscribe to STOMP errors
+  useSubscription('/user/queue/error', (error) => {
+    const { error_msg }: { error_msg: string } = JSON.parse(error.body);
+    setMessage(error_msg);
+    setSeverity('error');
+  });
 
   const notificationContextValue: NotificationContextProps = {
     message,

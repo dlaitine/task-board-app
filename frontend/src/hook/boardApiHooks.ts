@@ -6,10 +6,9 @@ import { baseUrl } from '../common/constants';
 export const usePublicBoards = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [shouldRefetch, refetch] = useState({});
 
   const { setMessage, setSeverity } = useContext(NotificationContext);
-
-  const [shouldRefetch, refetch] = useState({});
 
   const fetchData = (controller: AbortController) => {
     const signal = controller.signal;
