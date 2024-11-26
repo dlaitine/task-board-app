@@ -6,7 +6,7 @@ spring:
       ddl-auto: none
     show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/task
+    url: jdbc:mysql://db:3306/task
     username: 'task_user'
     password: 'pleasechange'
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ChatMessageService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatMessageService.class);
 
     private final ChatMessageRepository messageRepository;

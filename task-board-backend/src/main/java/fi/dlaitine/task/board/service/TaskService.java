@@ -26,6 +26,7 @@ public class TaskService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
 
     private final BoardRepository boardRepository;
+
     private final TaskRepository taskRepository;
 
     @Autowired

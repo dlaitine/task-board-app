@@ -1,7 +1,31 @@
 version: '3.9'
 
 services:
-  mysql:
+  frontend:
+    container_name: task-board-frontend
+    build:
+      context: ./task-board-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    volumes:
+      - ./task-board-frontend:/app
+      - /app/node_modules
+  backend:
+    container_name: task-board-backend
+    build:
+      context: ./task-board-backend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    volumes:
+      - ./task-board-backend:/app
+  db:
+    container_name: task-board-db
     image: mysql:8
     restart: always
     environment:

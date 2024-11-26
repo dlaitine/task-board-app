@@ -1,13 +1,3 @@
-# the base image
-FROM eclipse-temurin:17
-
-# the JAR file path
-ARG JAR_FILE=target/*.jar
-
-# Copy the JAR file from the build context into the Docker image
-COPY ${JAR_FILE} application.jar
-
-CMD apt-get update -y
-
-# Set the default command to run the Java application
-ENTRYPOINT ["java", "-Xmx2048M", "-jar", "/application.jar"]
+FROM maven:3.8.4-openjdk-17
+WORKDIR /app
+ENTRYPOINT ["mvn", "spring-boot:run"]
