@@ -38,7 +38,6 @@ public class TaskService {
 
     public TaskResponseDto addTask(UUID boardId, CreateTaskDto task) throws BoardNotFoundException {
         if (!boardRepository.existsById(boardId)) {
-            LOGGER.warn("Board '{}' not found", boardId);
             throw new BoardNotFoundException(String.format("Board '%s' not found.", boardId));
         }
 
@@ -64,7 +63,6 @@ public class TaskService {
         Optional<TaskEntity> optionalTask = taskRepository.findByBoardIdAndId(boardId, taskId);
 
         if (optionalTask.isEmpty()) {
-            LOGGER.warn("Task {} for board {} not found.", taskId, boardId);
             throw new TaskNotFoundException(String.format("Task '%s' for board '%s' not found.", taskId, boardId));
         }
 
